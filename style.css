@@ -51,3 +51,20 @@ img {
     margin-bottom: 40px;
 
 }
+
+.project-card {
+
+    border: 1px solid #cccccc;
+
+    padding: 20px;
+
+    margin-top: 20px;
+
+    border-radius: 8px;
+
+}
+.project-card:hover {
+
+    background-color: #f6f6f6;
+
+}
