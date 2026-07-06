@@ -339,3 +339,30 @@ footer a:hover {
     color: #C9794A;
 
 }
+
+
+.about-content {
+
+    display: flex;
+
+    gap: 50px;
+
+    align-items: flex-start;
+
+    margin-top: 40px;
+
+}
+.about-image {
+
+    width: 350px;
+
+    border-radius: 12px;
+
+    flex-shrink: 0;
+
+}
+.about-text {
+
+    max-width: 650px;
+
+}
