@@ -296,24 +296,35 @@ main {
 
 footer {
 
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
     margin-top: 80px;
 
-    padding-top: 30px;
+    padding: 25px 0;
 
-    padding-bottom: 30px;
+    border-top: 1px solid #DDDDD7;
 
     color: #66635E;
 
     font-size: 16px;
 
 }
-footer hr {
+.footer-right {
 
-    border: none;
+    display: flex;
 
-    border-top: 1px solid #DDDDD7;
+    align-items: center;
 
-    margin-bottom: 25px;
+    gap: 30px;
+
+}
+footer p {
+
+    margin: 0;
 
 }
 footer a {
@@ -326,10 +337,5 @@ footer a {
 footer a:hover {
 
     color: #C9794A;
-
-}
-footer p {
-
-    margin: 12px 0;
 
 }
