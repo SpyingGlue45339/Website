@@ -187,3 +187,24 @@ main {
     margin-top: 25px;
 
 }
+.view-all {
+
+    text-align: right;
+
+    margin-top: 20px;
+
+}
+.view-all a {
+
+    color: #5E7D68;
+
+    text-decoration: none;
+
+    font-style: italic;
+
+}
+.view-all a:hover {
+
+    color: #C9794A;
+
+}
