@@ -1,3 +1,13 @@
+:root {
+    --background: #F6F3ED;
+    --surface: #FFFFFF;
+    --primary: #5E7D68;
+    --accent: #C9794A;
+    --text: #2E2E2B;
+    --secondary-text: #66635E;
+    --border: #DDDDD7;
+}
+
 body {
     color: #2E2E2B;
     background-color: #F6F3ED;
@@ -6,7 +16,7 @@ body {
     margin-left: 40px;
     margin-right: 40px;
     margin-bottom: 40px;
-    max-width: 900px;
+
 }
 
 nav {
@@ -22,8 +32,45 @@ nav a {
     margin-left: 30px;
 
     font-size: 18px;
+    position: relative;
+}
+
+nav a::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: -4px;
+
+    width: 100%;
+
+    height: 2px;
+
+    background-color: #C9794A;
+
+    transform: translateX(-50%) scaleX(0);
+
+    transform-origin: center;
+
+    transition: transform 0.3s ease;
 
 }
+
+nav a:hover::after {
+
+    transform: translateX(-50%) scaleX(1);
+
+}
+nav a.active::after {
+
+    transform: translateX(-50%) scaleX(1);
+
+}
+
+
 nav a:hover {
 
     color: #C9794A;
@@ -97,3 +144,4 @@ img {
     background-color: #f6f6f6;
 
 }
+
