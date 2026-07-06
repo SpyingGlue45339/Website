@@ -1,6 +1,6 @@
 body {
-    background-color: white;
-    color: black;
+    color: #2E2E2B;
+    background-color: #F6F3ED;
     font-family: "Times New Roman", Times, serif;
     margin-top: 10px;
     margin-left: 40px;
@@ -14,17 +14,40 @@ nav {
 }
 
 nav a {
-    margin-right: 20px;
+
+    color: #5E7D68;
+
+    text-decoration: none;
+
+    margin-left: 30px;
+
+    font-size: 18px;
+
+}
+nav a:hover {
+
+    color: #C9794A;
+
 }
 
 h1 {
-    font-size: 40px;
+
+    font-size: 42px;
+
+    margin: 0;
+
 }
 header {
 
     display: flex;
+
     justify-content: space-between;
-    align-items: center;
+
+    align-items: flex-end;
+
+    padding: 20px 0;
+
+    border-bottom: 1px solid #DDDDD7;
 
 }
 
@@ -34,9 +57,15 @@ img {
 }
 
 .subtitle {
+
+    margin-top: 5px;
+
+    margin-bottom: 0;
+
+    color: #66635E;
+
     font-style: italic;
-    color: #555555;
-    margin-top: -20px;
+
 }
 
 
@@ -54,13 +83,13 @@ img {
 
 .project-card {
 
-    border: 1px solid #cccccc;
+    background: white;
 
-    padding: 20px;
-
-    margin-top: 20px;
+    border: 1px solid #DDDDD7;
 
     border-radius: 8px;
+
+    padding: 20px;
 
 }
 .project-card:hover {
