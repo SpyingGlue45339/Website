@@ -84,6 +84,9 @@ h1 {
     margin: 0;
 
 }
+h2 {
+    color: #5E7D68;
+}
 header {
 
     display: flex;
@@ -134,6 +137,12 @@ img {
 
     position:relative;
 
+    display: block;
+
+    text-decoration: none;
+
+    color: inherit;
+
     overflow:hidden;
 
     border-radius:12px;
@@ -163,6 +172,14 @@ img {
 .project-card:hover img {
 
     transform: scale(1.05);
+
+}
+
+.read-more {
+
+    color: white;
+
+    font-weight: bold;
 
 }
 .card-overlay{
