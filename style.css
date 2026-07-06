@@ -153,9 +153,16 @@ img {
 
     object-fit:cover;
 
-    transition:0.3s ease;
+    transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
 
     filter:brightness(0.8);
+
+}
+.project-card:hover img {
+
+    transform: scale(1.05);
 
 }
 .card-overlay{
@@ -170,7 +177,7 @@ img {
 
     justify-content:flex-end;
 
-    padding:25px;
+    padding:15px;
     background:
 
         linear-gradient(
@@ -189,16 +196,20 @@ img {
 .card-overlay h3{
 
     color:white;
+    margin: 0 0 16px 0;
 
 }
 .card-overlay p{
 
     color:white;
+    margin: 0 0 24px 0;
 
 }
 .card-overlay a{
 
     color:white;
+    text-decoration:none;
+    margin: 0;
 
 }
 
