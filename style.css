@@ -412,15 +412,13 @@ footer a:hover {
 
     display:grid;
 
-    grid-template-columns:45% 55%;
+    grid-template-columns: 520px 650px;
 
-    gap:60px;
+    justify-content:center;
+
+    gap:70px;
 
     align-items:start;
-
-    max-width: 1400px;
-
-    margin: 0 auto;
 
 }
 .faq {
