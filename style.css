@@ -413,6 +413,10 @@ footer a:hover {
 
     align-items:start;
 
+    max-width: 1400px;
+
+    margin: 0 auto;
+
 }
 .faq {
 
