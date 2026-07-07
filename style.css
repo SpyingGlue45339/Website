@@ -371,17 +371,23 @@ footer a:hover {
 }
 
 
-.about-image {
+.about-image{
 
-    width: 320px;
+    width:100%;
 
-    border-radius: 12px;
+    max-width:none;
 
-    position: sticky;
+    height:750px;
 
-    top: 40px;
+    object-fit:cover;
 
-    flex-shrink: 0;
+    object-position:center;
+
+    border-radius:18px;
+
+    position:sticky;
+
+    top:30px;
 
 }
 .about-text {
@@ -397,13 +403,15 @@ footer a:hover {
 
 }
 
-.about-content {
+.about-content{
 
-    display: flex;
+    display:grid;
 
-    gap: 60px;
+    grid-template-columns:45% 55%;
 
-    align-items: flex-start;
+    gap:60px;
+
+    align-items:start;
 
 }
 .faq {
@@ -649,7 +657,7 @@ footer a:hover {
 
     display: block;
 
-    font-size: 34px;
+    font-size: 25px;
 
     color: #5E7D68;
 
