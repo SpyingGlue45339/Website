@@ -7,7 +7,33 @@
 </head>
 
 <body>
-    <header>
+
+<section class="landing">
+
+    <img
+        src="images/BearWeb.jpg"
+        alt="Bear in woodland"
+        class="landing-image">
+
+    <div class="landing-overlay">
+
+        <h1>Edward</h1>
+
+        <p>
+            Thoughts, projects and things I've built.
+        </p>
+
+        <div class="scroll-indicator" onclick="scrollToSite()">
+
+            ↓
+
+        </div>
+
+    </div>
+
+</section>
+
+<header id="main-site">
 
     <div class="title-area">
 
@@ -21,7 +47,7 @@
 
     <nav>
 
-        <a href="index.html"class="active">Home</a>
+        <a href="index.html" class="active">Home</a>
         <a href="projects.html">Projects</a>
         <a href="blog.html">Blog</a>
         <a href="about.html">About</a>
@@ -36,101 +62,160 @@
 </header>
 
 <main>
-    <img class="hero-image"
-         src="images/BearWeb.jpg"
-         alt="Bear in woodland">
-    <section class="introduction">
-        <h2>I enjoy building things.</h2>
 
-        <p>
-            Whether that's Minecraft maps, teaching resources,
-            programming projects or simply learning something new,
-            this website is where I share what I'm working on.
-        </p>
-    </section>
     <section class="featured-projects">
+
         <h2>Featured Projects</h2>
+
         <div class="card-container">
+
             <a href="guesswho.html" class="project-card">
-                <img src="images/GuessWho.png"
-                     alt="Minecraft Guess Who">
+
+                <img
+                    src="images/GuessWho.png"
+                    alt="Minecraft Guess Who">
+
                 <div class="card-overlay">
+
                     <h3>Minecraft Guess Who</h3>
+
                     <p>
                         A multiplayer social deduction game built entirely in
                         Minecraft Bedrock.
                     </p>
+
                     <span class="read-more">Explore →</span>
+
                 </div>
+
             </a>
+
             <a href="website.html" class="project-card">
-                <img src="images/Website.png"
-                     alt="This Website">
+
+                <img
+                    src="images/Website.png"
+                    alt="This Website">
+
                 <div class="card-overlay">
+
                     <h3>This Website</h3>
+
                     <p>
                         Building this website from scratch using HTML and CSS.
                     </p>
+
                     <span class="read-more">Explore →</span>
+
                 </div>
+
             </a>
+
             <a href="teaching.html" class="project-card">
-                <img src="images/Teaching.png"
-                     alt="Teaching">
+
+                <img
+                    src="images/Teaching.png"
+                    alt="Teaching">
+
                 <div class="card-overlay">
+
                     <h3>Teaching</h3>
+
                     <p>
                         Resources, lesson ideas and tutoring materials.
                     </p>
+
                     <span class="read-more">Explore →</span>
+
                 </div>
+
             </a>
+
         </div>
+
         <p class="view-all">
+
             <a href="projects.html">View all projects →</a>
+
         </p>
+
     </section>
+
     <section class="recent-writing">
+
         <h2>Recent Writing</h2>
+
         <div class="card-container">
+
             <a href="mallardmash.html" class="project-card">
-                <img src="images/DuckWeb.jpg"
-                     alt="Mallard Mash">
+
+                <img
+                    src="images/DuckWeb.jpg"
+                    alt="Mallard Mash">
+
                 <div class="card-overlay">
+
                     <h3>Mallard Mash</h3>
+
                     <p>
                         Thoughts on...
                     </p>
+
                     <span class="read-more">Explore →</span>
+
                 </div>
+
             </a>
+
             <a href="websiteblog.html" class="project-card">
-                <img src="images/Website.png"
-                     alt="Building This Website">
+
+                <img
+                    src="images/Website.png"
+                    alt="Building This Website">
+
                 <div class="card-overlay">
+
                     <h3>Building This Website</h3>
+
                     <p>
                         Learning HTML and CSS from scratch.
                     </p>
+
                     <span class="read-more">Explore →</span>
+
                 </div>
+
             </a>
+
             <a href="#" class="project-card">
-                <img src="images/ComingSoon.png"
-                     alt="Next Project">
+
+                <img
+                    src="images/ComingSoon.png"
+                    alt="Next Project">
+
                 <div class="card-overlay">
+
                     <h3>Next Project</h3>
+
                     <p>
                         Coming soon...
                     </p>
+
                     <span class="read-more">Explore →</span>
+
                 </div>
+
             </a>
+
         </div>
+
         <p class="view-all">
+
             <a href="blog.html">View all posts →</a>
+
         </p>
+
     </section>
+
 </main>
 
 <footer>
@@ -148,8 +233,29 @@
 </footer>
 
 
+<script>
 
+function scrollToSite(){
 
+    document.getElementById("main-site").scrollIntoView({
+
+        behavior: "smooth"
+
+    });
+
+}
+
+window.addEventListener("scroll", function(){
+
+    const overlay = document.querySelector(".landing-overlay");
+
+    const y = window.scrollY;
+
+    overlay.style.opacity = Math.max(1 - y / 250, 0);
+
+});
+
+</script>
 </body>
 
 
