@@ -17,12 +17,23 @@ body {
     margin: 0;
 
 }
-header,
-main,
-footer{
+header{
 
     margin-left:40px;
     margin-right:40px;
+
+}
+
+main,
+footer{
+
+    max-width:1300px;
+
+    margin:25px auto 0 auto;
+
+    padding:0 40px;
+
+    box-sizing:border-box;
 
 }
 .landing{
@@ -386,10 +397,11 @@ main {
 
 }
 
-.introduction {
+.introduction{
 
     margin-top:30px;
     margin-bottom:40px;
+
 }
 
 .introduction h2 {
@@ -877,5 +889,26 @@ footer a:hover {
     color: #C9794A;
 
     transform: translateX(5px);
+
+}
+
+.game-container{
+
+    width:100%;
+    max-width:1200px;
+    margin:40px auto;
+
+}
+
+.game-container iframe{
+
+    width:100%;
+    aspect-ratio:16/9;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:black;
 
 }
