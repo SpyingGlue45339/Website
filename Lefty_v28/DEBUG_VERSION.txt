@@ -1,0 +1,2 @@
+LEFTY SIMULATOR V28
+Audio overhaul: preloading, fresh voice-line bag, larger mixer buffer.
