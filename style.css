@@ -913,7 +913,6 @@ footer a:hover {
 
 }
 
-
 .article {
 
     max-width: 900px;
@@ -924,68 +923,55 @@ footer a:hover {
 
 .article h1 {
 
-    font-size: 48px;
+    font-size: 50px;
 
     line-height: 1.2;
 
     color: #2E2E2B;
 
-    margin: 0 0 35px 0;
+    margin: 0 0 45px 0;
 
 }
 
 .article p {
 
-    font-size: 21px;
+    font-size: 22px;
 
     line-height: 1.6;
 
-    margin: 0 0 28px 0;
+    margin: 0 0 30px 0;
+
+    color: #2E2E2B;
 
 }
 
 .article h2 {
 
-    font-size: 34px;
+    font-size: 38px;
 
     line-height: 1.25;
 
     color: #5E7D68;
 
-    margin-top: 65px;
+    margin-top: 75px;
 
-    margin-bottom: 30px;
-
-}
-.article-break {
-
-    text-align: center;
-
-    font-size: 26px;
-
-    color: #C9784A;
-
-    font-style: italic;
-
-    margin: 50px 0;
+    margin-bottom: 35px;
 
 }
-.article-emphasis {
 
-    color: #5E7D68;
+.article h2:first-of-type {
 
-    font-style: italic;
-
-    margin: 40px 0;
+    font-size: 44px;
 
 }
+
 .article-quote {
 
+    margin: 45px 0;
+
+    padding-left: 25px;
+
     border-left: 3px solid #5E7D68;
-
-    padding-left: 28px;
-
-    margin: 55px 0;
 
 }
 
@@ -993,13 +979,11 @@ footer a:hover {
 
     font-size: 25px;
 
-    line-height: 1.45;
+    line-height: 1.5;
 
     font-style: italic;
 
-    color: #5E7D68;
-
-    margin: 0 0 20px 0;
+    margin: 0 0 15px 0;
 
 }
 
@@ -1009,6 +993,64 @@ footer a:hover {
 
     font-style: normal;
 
-    color: #2E2E2B;
+}
+
+.article-tldr {
+
+    margin-top: 90px;
+
+    padding: 25px 30px;
+
+    border-top: 1px solid #DDDDD7;
+
+    border-bottom: 1px solid #DDDDD7;
+
+}
+
+.article-tldr strong {
+
+    font-size: 24px;
+
+    color: #5E7D68;
+
+}
+
+.article-tldr p {
+
+    margin: 12px 0 0 0;
+
+    font-size: 20px;
+
+}
+
+.article-tldr {
+
+    margin-top: 70px;
+
+    padding: 30px 35px;
+
+    background: #F1EEE7;
+
+    border-left: 4px solid #C9794A;
+
+}
+
+
+.article-tldr p {
+
+    margin-bottom: 0;
+
+}
+
+
+.tldr-label {
+
+    color: #5E7D68;
+
+    font-weight: bold;
+
+    font-style: italic;
+
+    margin-bottom: 10px !important;
 
 }
