@@ -914,3 +914,248 @@ footer a:hover {
 }
 
 
+.blog-article {
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 40px 0 80px 0;
+
+}
+
+
+.article-header {
+
+    text-align: center;
+
+    margin-bottom: 70px;
+
+}
+
+
+.article-category {
+
+    color: #5E7D68;
+
+    font-style: italic;
+
+    margin-bottom: 15px;
+
+}
+
+
+.article-header h1 {
+
+    font-size: 52px;
+
+    line-height: 1.1;
+
+    margin: 0 auto 25px auto;
+
+    color: #2E2E2B;
+
+}
+
+
+.article-introduction {
+
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    font-size: 22px;
+
+    line-height: 1.6;
+
+    color: #5E7D68;
+
+    font-style: italic;
+
+}
+
+
+.article-body {
+
+    font-size: 20px;
+
+    line-height: 1.75;
+
+}
+
+
+.article-body p {
+
+    margin: 0 0 30px 0;
+
+}
+
+
+.article-body h2 {
+
+    color: #5E7D68;
+
+    font-size: 32px;
+
+    margin-top: 70px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.article-emphasis {
+
+    font-size: 23px;
+
+    font-style: italic;
+
+    color: #5E7D68;
+
+}
+
+
+.article-break {
+
+    text-align: center;
+
+    font-size: 28px;
+
+    font-style: italic;
+
+    color: #C9794A;
+
+    margin: 55px 0 !important;
+
+}
+
+
+.aside-note {
+
+    color: #5E7D68;
+
+}
+
+
+.pull-quote {
+
+    position: relative;
+
+    margin: 55px 0;
+
+    padding: 10px 45px;
+
+    border-left: 3px solid #5E7D68;
+
+    border-right: 1px solid #DDDDD7;
+
+}
+
+
+.pull-quote::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 10px;
+
+    top: 0;
+
+    bottom: 0;
+
+    border-left: 1px solid #C9794A;
+
+}
+
+
+.pull-quote p {
+
+    font-size: 27px;
+
+    line-height: 1.45;
+
+    font-style: italic;
+
+    color: #5E7D68;
+
+    margin-bottom: 15px;
+
+}
+
+
+.pull-quote cite {
+
+    font-size: 17px;
+
+    color: #2E2E2B;
+
+    font-style: normal;
+
+}
+
+
+.article-conclusion {
+
+    margin-top: 70px;
+
+    padding: 35px 0;
+
+    border-top: 1px solid #DDDDD7;
+
+    border-bottom: 1px solid #DDDDD7;
+
+    text-align: center;
+
+}
+
+
+.article-conclusion p {
+
+    margin-bottom: 20px;
+
+}
+
+
+.conclusion-line {
+
+    font-size: 42px;
+
+    color: #5E7D68;
+
+    margin: 25px 0 !important;
+
+}
+
+
+.article-tldr {
+
+    margin-top: 70px;
+
+    padding: 30px 35px;
+
+    background: #F1EEE7;
+
+    border-left: 4px solid #C9794A;
+
+}
+
+
+.article-tldr p {
+
+    margin-bottom: 0;
+
+}
+
+
+.tldr-label {
+
+    color: #5E7D68;
+
+    font-weight: bold;
+
+    font-style: italic;
+
+    margin-bottom: 10px !important;
+
+}
