@@ -921,49 +921,64 @@ footer a:hover {
 
 }
 
+
+/* ARTICLE TITLE */
+
 .article h1 {
 
-    font-size: 50px;
+    font-size: 46px;
 
     line-height: 1.2;
 
     color: #2E2E2B;
 
-    margin: 0 0 45px 0;
+    margin: 0 0 40px 0;
 
 }
 
+
+/* BODY TEXT */
+
 .article p {
 
-    font-size: 22px;
+    font-size: 20px;
 
     line-height: 1.6;
 
-    margin: 0 0 30px 0;
+    margin: 0 0 28px 0;
 
     color: #2E2E2B;
 
 }
 
+
+/* SECTION HEADINGS */
+
 .article h2 {
 
-    font-size: 38px;
+    font-size: 34px;
 
     line-height: 1.25;
 
     color: #5E7D68;
 
-    margin-top: 75px;
+    margin-top: 65px;
 
-    margin-bottom: 35px;
+    margin-bottom: 30px;
 
 }
+
+
+/* MAIN SECTION HEADING */
 
 .article h2:first-of-type {
 
-    font-size: 44px;
+    font-size: 40px;
 
 }
+
+
+/* QUOTE */
 
 .article-quote {
 
@@ -977,7 +992,7 @@ footer a:hover {
 
 .article-quote p {
 
-    font-size: 25px;
+    font-size: 22px;
 
     line-height: 1.5;
 
@@ -989,39 +1004,14 @@ footer a:hover {
 
 .article-quote cite {
 
-    font-size: 18px;
+    font-size: 17px;
 
     font-style: normal;
 
 }
 
-.article-tldr {
 
-    margin-top: 90px;
-
-    padding: 25px 30px;
-
-    border-top: 1px solid #DDDDD7;
-
-    border-bottom: 1px solid #DDDDD7;
-
-}
-
-.article-tldr strong {
-
-    font-size: 24px;
-
-    color: #5E7D68;
-
-}
-
-.article-tldr p {
-
-    margin: 12px 0 0 0;
-
-    font-size: 20px;
-
-}
+/* TL;DR */
 
 .article-tldr {
 
@@ -1035,22 +1025,28 @@ footer a:hover {
 
 }
 
-
 .article-tldr p {
 
     margin-bottom: 0;
 
 }
 
-
 .tldr-label {
 
     color: #5E7D68;
+
+    font-size: 22px !important;
 
     font-weight: bold;
 
     font-style: italic;
 
     margin-bottom: 10px !important;
+
+}
+
+.article-tldr p:not(.tldr-label) {
+
+    font-size: 19px;
 
 }
