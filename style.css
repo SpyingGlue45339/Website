@@ -1076,3 +1076,63 @@ footer a:hover {
     margin-top: -60px;
     margin-bottom: 35px;
 }
+
+
+.article-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin: 55px 0;
+
+    font-size: 18px;
+
+}
+
+.article-table th {
+
+    padding: 15px 18px;
+
+    text-align: left;
+
+    font-weight: bold;
+
+    color: #5E7D68;
+
+    border-bottom: 2px solid #DDDDD7;
+
+}
+
+.article-table td {
+
+    padding: 15px 18px;
+
+    border-bottom: 1px solid #DDDDD7;
+
+}
+
+.article-table th:not(:first-child),
+.article-table td:not(:first-child) {
+
+    text-align: center;
+
+}
+
+.article-table tbody tr:last-child td {
+
+    border-bottom: none;
+
+}
+
+.article-table .episode {
+
+    font-weight: bold;
+
+}
+
+.article-table .total {
+
+    font-weight: bold;
+
+}
