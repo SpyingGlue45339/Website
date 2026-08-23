@@ -1067,3 +1067,12 @@ footer a:hover {
     border-radius: 10px;
 
 }
+
+.article-caption {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #6B6B65;
+    font-style: italic;
+    margin-top: -60px;
+    margin-bottom: 35px;
+}
