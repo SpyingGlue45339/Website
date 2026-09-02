@@ -1137,19 +1137,46 @@ footer a:hover {
 
 }
 
-/* ABSTRACT */
+/* FOREWORD */
 
-.article .article-abstract {
+.article .article-foreword {
     margin-bottom: 55px;
     padding: 25px 30px;
     background: #F1EEE7;
     border-left: 4px solid #5E7D68;
 }
 
-.article .article-abstract p {
+.article .article-foreword h2 {
+    color: #5E7D68;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.article .article-foreword p {
+    margin-bottom: 28px;
+}
+
+.article .article-foreword p:last-child {
     margin-bottom: 0;
 }
 
+/* ABSTRACT */
+
+.article .article-abstract {
+    margin-bottom: 55px;
+    padding: 25px 30px;
+    background: #F1EEE7;
+    border-left: 4px solid #66635E;
+}
+
+.article .article-abstract h2 {
+    color: #66635E;
+    margin-top: 0;
+}
+
+.article .article-abstract p {
+    margin-bottom: 0;
+}
 
 /* EQUATIONS */
 
@@ -1190,3 +1217,4 @@ footer a:hover {
 .article-table .wavelength {
     text-align: center !important;
 }
+
