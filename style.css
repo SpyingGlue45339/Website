@@ -1053,19 +1053,12 @@ footer a:hover {
 
 
 
-
 .article-image {
-
     width: 100%;
-
     height: auto;
-
     display: block;
-
-    margin: 40px 0;
-
+    margin: 40px 0 10px 0;
     border-radius: 10px;
-
 }
 
 .article-caption {
@@ -1073,7 +1066,7 @@ footer a:hover {
     line-height: 1.4;
     color: #6B6B65;
     font-style: italic;
-    margin-top: -60px;
+    margin-top: 0;
     margin-bottom: 35px;
 }
 
