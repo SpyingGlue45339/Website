@@ -520,55 +520,37 @@ footer a:hover {
 
 }
 .about-text {
-
     max-width: 700px;
-
     line-height: 1.7;
-
-}
-.about-text h2 {
-
-    margin-top: 0px;
-
+    font-size: 20px;
 }
 
-.about-content{
-
-    display:grid;
-
-    grid-template-columns: 520px 650px;
-
-    justify-content:center;
-
-    gap:70px;
-
-    align-items:start;
-
+.about-text > p {
+    line-height: 1.6;
+    margin-bottom: 28px;
 }
+
+.about-content {
+    display: grid;
+    grid-template-columns: 520px 620px;
+    justify-content: center;
+    gap: 60px;
+    align-items: start;
+}
+
 .faq {
-
     margin-top: 70px;
-
-    max-width: 650px;
-
-
+    max-width: 620px;
 }
+
 .faq-card {
-
-    width: 620px;   /* adjust to taste */
-
+    width: 100%;
     background: white;
-
     border: 1px solid #DDDDD7;
-
     border-radius: 12px;
-
     margin-bottom: 18px;
-
     overflow: hidden;
-
     box-sizing: border-box;
-
 }
 .faq-card summary {
 
