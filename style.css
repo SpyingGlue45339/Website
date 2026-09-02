@@ -1136,3 +1136,53 @@ footer a:hover {
     font-weight: bold;
 
 }
+
+/* ABSTRACT */
+
+.article .article-abstract {
+    margin-bottom: 55px;
+    padding: 25px 30px;
+    background: #F1EEE7;
+    border-left: 4px solid #5E7D68;
+}
+
+.article .article-abstract p {
+    margin-bottom: 0;
+}
+
+
+/* EQUATIONS */
+
+.article .article-equation {
+    text-align: center;
+    font-size: 22px;
+    line-height: 1.5;
+    margin: 35px 0;
+}
+
+.article-summary {
+    margin-bottom: 60px;
+    padding: 30px 35px;
+    background: #F1EEE7;
+    border-left: 4px solid #C9794A;
+}
+
+.article-summary h2 {
+    color: #C9794A;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.article-summary p {
+    margin-bottom: 20px;
+}
+
+.article-summary p:last-child {
+    margin-bottom: 0;
+}
+
+.article-summary h2,
+.article-abstract h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+}

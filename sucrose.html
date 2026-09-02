@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Edward's Website</title>
+</head>
+
+<body>
+    <header>
+
+    <div class="title-area">
+
+        <h1>Edward</h1>
+
+        <p class="subtitle">
+            Thoughts, projects and things I've built.
+        </p>
+
+    </div>
+
+    <nav>
+
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="blog.html" class="active">Blog</a>
+        <a href="about.html">About</a>
+
+    </nav>
+
+    <img
+        src="images/CapyHeader.png"
+        alt="Capybara"
+        class="header-capy">
+
+</header>
+
+
+<main>
+
+    <article class="article">
+
+        <h1>
+            Measurement of the Wavelength Dependence of Optical Rotation in Sucrose
+        </h1>
+
+    <div class="article-summary">
+
+        <h2>
+            Scientific Summary
+        </h2>
+
+        <p>
+            When light travels through certain substances, like sugar dissolved
+            in water, it can change in a subtle way. The direction in which the
+            light wave oscillates, called the polarisation, can rotate. This
+            effect is known as optical rotation.
+        </p>
+
+        <p>
+            In this experiment, light was first passed through a filter which
+            only allowed light vibrating in a single direction to pass. It then
+            travelled through a sugar solution, where its polarisation was
+            rotated. A second filter was placed after the solution and rotated
+            until it was aligned with the light. At this point, the transmitted
+            light was brightest, allowing the angle of rotation to be measured.
+        </p>
+
+        <p>
+            The experiment investigated how this rotation depends on the
+            wavelength of the light. In particular, it tested whether blue light
+            is rotated more than red light as it passes through the sugar
+            solution.
+        </p>
+
+        <p>
+            This effect has useful applications outside the laboratory. Optical
+            rotation can be used to determine the concentration of substances
+            such as sugars quickly and non-invasively. The results of this
+            experiment show that blue light is rotated more than red light,
+            while also demonstrating the challenges involved in making precise
+            measurements with relatively simple equipment.
+        </p>
+
+    </div>
+
+        <div class="article-abstract">
+
+            <h2 class="article-major-heading">
+                Abstract
+            </h2>
+
+            <p>
+                Optical rotation in sucrose was investigated using polarized light
+                and Malus’s Law to extract rotation angles from photodiode intensity
+                data. The wavelength dependence of the specific rotation was
+                compared with the Drude formula, yielding A being
+                (2.16 ± 0.02) × 10⁷ ° dm⁻¹ g⁻¹ mL nm², in agreement with the
+                literature value, despite a large reduced χ². The temperature
+                dependence was also studied, but reproducibility and systematic
+                errors were larger than any measurable effect. Overall, the
+                experiment shows that optical rotation in sucrose can be observed
+                reliably with simple apparatus, but more precise determination of
+                model parameters requires better control of alignment and reference
+                measurements.
+            </p>
+
+        </div>
+
+
+        <h2 class="article-major-heading">
+            Introduction
+        </h2>
+
+        <p>
+            When polarised light passes through an aqueous sucrose
+            solution, its plane of polarisation is rotated. This
+            phenomenon, known as optical rotation, produces a
+            rotation angle θ that depends on the properties of the
+            solution. The intensity I of this rotated beam is related
+            to θ by Malus’s Law, where
+        </p>
+
+        <p class="article-equation">
+            <i>I</i> = <i>I</i><sub>0</sub> cos²(<i>θ</i> − <i>φ</i>)
+        </p>
+        </p>
+
+        <p>
+            with φ representing the phase shift between this angle and
+            the reference zero, and I₀ indicating the initial intensity.
+            θ is related to the solution properties by the specific
+            rotation, defined as
+        </p>
+
+        <p class="article-equation">
+            [<i>α</i>]<sub>λ</sub><sup>T</sup> =
+            <i>θ</i> / <i>Lc</i>
+        </p>
+
+        <p>
+            where L is the sample length and c is the concentration.
+            The specific rotation is dependent on the temperature T,
+            and the wavelength of light λ. The wavelength dependence
+            can be described by empirical relations, such as the Drude
+            formula,
+        </p>
+
+        <p class="article-equation">
+            [<i>α</i>]<sub>λ</sub>(<i>λ</i>) =
+            <i>A</i> / (<i>λ</i>² − <i>λ</i><sub>0</sub>²)
+        </p>
+
+        <p>
+            which models the wavelength dependence of the specific
+            rotation using constants A, and λ₀. These have the values
+            of 2.16 × 10⁷ ° dm⁻¹ g⁻¹ mL nm², and 146 nm respectively.
+            This formula breaks down at the absorbance wavelengths of
+            the optical medium. The temperature dependence is typically
+            much weaker and is often approximated as linear over small
+            ranges, although it is generally considered negligible
+            compared to wavelength effects for standard laboratory
+            conditions.
+        </p>
+
+        <p>
+            This report aims to test the Drude formula for the wavelength
+            dependence of the optical rotation of sucrose. Moreover, it
+            considers the extent to which this experiment functions as a
+            standard teaching laboratory, including the relevance of
+            temperature dependence, and systematic errors due to
+            alignment.
+        </p>
+
+
+        <h2 class="article-major-heading">
+            Method
+        </h2>
+        <img
+            src="images/projects/hexabeam.png"
+            alt="Sucrose Equipment Diagram"
+            class="article-image">
+
+        <p class="article-caption">
+        FIGURE 1: A demonstration of the apparatus set-up. The red beam represents the laser path. 
+        A visualisation of the polarisation and optical rotation phenomena are also shown.
+        </p>
+        <p>
+            The apparatus displayed in Fig. 1 was established along an
+            optical rail. Light from the laser was incident upon a fixed
+            polariser (angled at 330 ± 1°) to produce linearly polarised
+            light. This light then passed through a sucrose sample and
+            a rotatable polariser, before being detected by a photodiode.
+            The polariser angle was varied over 360° in 1° increments,
+            and at each degree 512 intensity measurements were recorded
+            and averaged.
+        </p>
+
+        <p>
+            This was done to maximise the number of points available for
+            χ² fitting and reduce the statistical uncertainty in the phase
+            extraction.
+        </p>
+
+        <p>
+            A spirit-level was used to obtain optimum optical orientation,
+            by ensuring parallelism along the optical rail. Ambient light
+            was minimised using black card and tape on electrical
+            components. Only visible wavelengths were used to avoid
+            absorbance wavelengths, and enable visual beam tracking to
+            ensure alignment.
+        </p>
+
+        <p>
+            Each session, background readings were taken by disabling the
+            laser. This was done to estimate variation in the systematic
+            error in our measurements, as well as to ensure there was no
+            discernible pattern thereof. Moreover, blank tube datasets
+            were taken in every session besides the penultimate, providing
+            a reference against which the sucrose phase shifts were
+            compared relative to.
+        </p>
+
+        <p>
+            Whilst keeping L and c constant throughout, this procedure was
+            repeated with variable wavelengths of light, drawing upon two
+            unique lasers. The sucrose solution was prepared identically
+            for each session by dissolving (100.0 ± 0.1) g of sucrose in
+            water to a total volume of (500.0 ± 0.5) mL in a volumetric
+            flask, thereby evading variation in concentration due to
+            dissolution effects. This was then poured into a tube of
+            fixed (34.3 ± 0.07) cm length.
+        </p>
+
+        <p>
+            Temperature dependence was measured separately using 685 nm
+            light, again with constant L and c. The temperatures were
+            taken with a thermocouple at the start and end of each run.
+            To minimise thermal drift, the tubes were wrapped in tin foil.
+        </p>
+
+        <p>
+            The data was modelled in the χ² minimisation algorithm as
+        </p>
+
+        <p class="article-equation">
+            <i>I</i> = <i>I</i><sub>0</sub> cos²(<i>θ</i> − <i>φ</i>) + <i>B</i>
+        </p>
+
+        <p>
+            with B representing the background light intensity.
+            Subtracting the background estimate alone did not always
+            eliminate the non-zero minima, and occasionally created
+            negative minima. To enable χ² analysis of the phase shift,
+            therefore, B was included. For each data set, the appropriate
+            blank tube angle was subtracted from the measured phase,
+            as this phase shift is a relative measurement.
+        </p>
+
+
+        <h2 class="article-major-heading">
+            Results
+        </h2>
+        <img
+            src="images/projects/intensityplot.png"
+            alt="Intensity Sine Curve"
+            class="article-image">
+
+        <p class="article-caption">
+        FIGURE 2: The intensity plot over 360° for the 514 nm laser. Horizontal error bars are not present, as per the Error Appendix. 
+        A fitted curve is included in a darker purple. Normalised residuals are underneath.
+        </p>
+
+        <p>
+            Fig. 2 shows a representative dataset (514 nm), with the
+            intensity plotted against polariser angle. A clear sinusoidal
+            dependence is observed, consistent with a cos² curve showing
+            a measurable phase offset. Normalised residuals with a visible
+            structure are present below.
+        </p>
+
+        <p>
+            The extracted phase shifts for all wavelengths are summarised
+            in Table 1. The phase shifts range from 27° to 160°, and the
+            corresponding reduced χ² values span from 0.31 to 2700,
+            indicating significant variation in fit quality between
+            datasets.
+        </p>
+
+        <p>
+            Fig. 3 shows the variation of specific rotation with
+            wavelength, demonstrating a decreasing trend with wavelength.
+            Chi-squared fitting yielded a value of A of
+            (2.16 ± 0.02) × 10⁷ ° dm⁻¹ g⁻¹ mL nm², with a reduced χ²
+            of 11.5.
+        </p>
+
+        <p>
+            Fig. 4 relates specific rotation with temperature at 685 nm.
+            The reduced χ² for the linear fit is 2.38, with the gradient
+            equalling (-0.6 ± 0.1) ° dm⁻¹ g⁻¹ mL °C⁻¹, and the y-intercept
+            being (64 ± 4) ° dm⁻¹ g⁻¹ mL.
+        </p>
+
+        <img
+            src="images/projects/functiontemp.png"
+            alt="Sucrose Equipment Diagram"
+            class="article-image">
+
+        <p class="article-caption">
+        FIGURE 1: A demonstration of the apparatus set-up. The red beam represents the laser path. 
+        A visualisation of the polarisation and optical rotation phenomena are also shown.
+        </p>
+
+
+        <h2 class="article-major-heading">
+            Discussion
+        </h2>
+
+        <p>
+            Table 1 reveals a clear discrepancy between datasets obtained
+            in different sessions. Data above the horizontal line correspond
+            to the initial sessions, while those below correspond to the
+            final session. The bottom three exhibit raw phases clustered
+            at zero, with negligible spread, in contrast to the ~10°
+            observed in earlier data.
+        </p>
+
+        <p>
+            The resulting phase shifts arise solely by the subtraction
+            from the blank tube phase shift. It can clearly be seen from
+            this raw phase collapse that those datasets are inconsistent
+            with the expected physical behaviour, and so were not included
+            in Fig. 3.
+        </p>
+
+        <p>
+            Contrastingly, top datasets from the final session display
+            non-zero raw phases. The 514 nm result lies within one
+            standard error of the expected value, whereas the 407 nm
+            result, conversely, deviates by more than a dozen standard
+            errors. The latter is rejected, in accordance with the large
+            reduced χ². Whilst the former has a worse reduced χ², it is
+            cautiously retained due to strong literature agreement.
+        </p>
+
+        <p>
+            The causes of this inconsistently anomalous behaviour are
+            unclear, although the consistently high reduced χ² values
+            (besides 637 nm) indicate a systematic issue. At 637 nm, the
+            measured intensity was sufficiently low that the relative
+            uncertainty became large, explaining the low χ².
+        </p>
+
+        <p>
+            One possible explanation is a change in polariser between
+            sessions. Wavelength-dependent transmission could suppress
+            polarisation between experiments, producing inconsistent phase
+            shifts. Despite the polarisers being checked post-experiment,
+            a lack of labelling prevents verification of this hypothesis,
+            which therefore remains speculative.
+        </p>
+
+        <p>
+            The datasets taken in the earlier sessions (above the black
+            line) show reasonable agreement with the expected values.
+            All lie within two standard errors of the literature value,
+            except the 635 nm value, which deviates by five. Despite this
+            discrepancy, the result remains physically feasible and hence
+            is retained. These datasets, along with the 514 nm run, were
+            used to produce Fig. 3.
+        </p>
+
+        <p>
+            Fitting both parameters of the Drude model is numerically
+            unstable when only a small number of wavelengths are available.
+            Small variations in the measured angles produce large
+            variations in the fitted value of λ₀, hence only A was found.
+        </p>
+
+        <p>
+            Fig. 3 exhibits the expected trend of decreasing specific
+            rotation with increasing wavelength. The extracted A of
+            (2.16 ± 0.02) × 10⁷ ° dm⁻¹ g⁻¹ mL nm² is consistent with the
+            literature value to the quoted precision, demonstrating the
+            resilience of this experiment despite the presence of
+            significant systematic errors.
+        </p>
+
+        <p>
+            The large reduced χ² of 11.5, however, indicates the fit does
+            not describe the data well, an effect inflamed by the 635 nm
+            dataset.
+        </p>
+
+        <p>
+            The apparent agreement with the literature arises from the
+            relatively large optical rotation in sucrose, such that
+            systematic errors are small relative to the signal.
+            Consequently, the overall dispersion trend is preserved
+            despite significant experimental limitations.
+        </p>
+
+        <p>
+            This robustness demonstrates why this experiment remains a
+            useful teaching demonstration of optical activity. More
+            precise measurements of A, however, would require a greater
+            number of wavelengths. Additionally, due to the nature of the
+            curve in Fig. 3, greater precision could also arise from using
+            smaller wavelengths, as the relative uncertainty in each
+            measurement will be smaller.
+        </p>
+
+        <p>
+            The residuals in Fig. 2 are not randomly distributed, instead
+            exhibiting a clear oscillatory pattern, indicating Eq. 1 does
+            not fully describe the data. This behaviour was observed
+            consistently across datasets.
+        </p>
+
+        <p>
+            The most likely cause of this is a deviation from ideal
+            Malus-law behaviour. Real polarisers do not perfectly transmit
+            a single polarisation state, and finite extinction ratios
+            introduce additional harmonic components into the intensity
+            variation. As a result, the true intensity is not perfectly
+            described by a simple cos² dependence, leading to systematic
+            residual patterns.
+        </p>
+
+        <p>
+            Additionally, alignment was a dominant source of uncertainty
+            in the experiment. Small rotations of the tube caused the beam
+            position to move across the photodiode, indicating that the
+            laser path was not perfectly parallel to the rail.
+        </p>
+
+        <p>
+            This is consistent with refraction within the tube due to
+            non-parallel walls, combined with imperfect laser alignment,
+            and mechanical instability in the mounts. A similar effect was
+            observed when wavelengths were changed, requiring constant
+            corrections of the equipment. This introduces angle-dependent
+            variations in intensity, rather than purely random noise.
+        </p>
+
+        <p>
+            These alignment variations do not correspond to changes in the
+            optical rotation itself, but instead the measured intensity in
+            each angle. As the phase is obtained from a nonlinear fit to
+            the intensity data, small variations are amplified between
+            runs, introducing a systematic spread in extracted phase
+            values.
+        </p>
+
+        <p>
+            A separate consequence of misalignment is a change in the
+            effective optical path length. For a given small angle δ this
+            effective length is given by
+        </p>
+
+        <p class="article-equation">
+            <i>L</i><sub>eff</sub> = <i>L</i> / cos <i>δ</i>
+        </p>
+
+        <p class="article-equation">
+            ≈ <i>L</i>(1 + <i>δ</i>² / 2)
+        </p>
+
+        <p>
+            For a tilt of 1°, this generates a percentage error of 0.015%
+            in our length, which is negligible compared to experimental
+            uncertainties. Thus, it fails to explain the discrepancy
+            between the expected and measured results.
+        </p>
+
+        <p>
+            Even for datasets showing the expected cos² dependence, the
+            reduced χ² values are often significantly above unity. This
+            indicates that the uncertainties assigned to individual
+            datapoints do not fully capture the true variability in the
+            measurements.
+        </p>
+
+        <p>
+            Thusly, whilst the error model accounts for statistical
+            fluctuations in the photodiode signal and background, these
+            contributions are small due to averaging, and therefore produce
+            very small per-point uncertainties.
+        </p>
+
+        <p>
+            For three nominally identical measurements, a standard deviation
+            of 1.58° was observed, highlighting how the experiment is limited
+            by reproducibility, rather than measurement precision.
+        </p>
+
+        <p>
+            This spread is not captured by the per-point uncertainties used
+            in the χ² fitting. Resultingly, the assigned uncertainties
+            underestimate the true variability in the data.
+        </p>
+
+        <p>
+            The fitted model therefore appears statistically poor despite
+            qualitatively good agreement with the data. The large reduced
+            χ² values arise because the fitting procedure assumes highly
+            precise datapoints, while additional variation from alignment
+            and phase extraction is not included in the uncertainty model.
+        </p>
+
+        <p>
+            Blank tube reference measurements were often not obtained for
+            the same wavelength as the corresponding sucrose dataset
+            (e.g. the 685 nm sucrose datasets were compared against a
+            405 nm blank). As the blank tube measurements define the
+            relative zero phase, this introduced a systematic offset to
+            the data as opposed to a random uncertainty.
+        </p>
+
+        <p>
+            While variations in light intensity between wavelengths
+            contribute to differences in measurement precision, they do
+            not account for the discrepancies observed. Instead, the use
+            of mismatched reference measurements, combined with the
+            sensitivity of the phase extraction to alignment conditions,
+            leads to systematic shifts in the calculated rotation angles.
+        </p>
+
+        <p>
+            This contributes to both the spread between datasets and the
+            deviation from expected values. Amelioration of this would
+            require a blank tube run to be performed directly after a
+            sucrose tube, ensuring a consistent zero-phase reference was
+            available with near-identical alignment.
+        </p>
+
+        <p>
+            It is often stated in reports on this subject that temperature
+            can be taken as negligible. This was investigated, with results
+            shown in Fig. 4. A reasonable reduced χ² value of 2.38 was
+            obtained from the linear fit.
+        </p>
+
+        <p>
+            This graph is not a meaningful representation of the physical
+            reality of the experiment. Literature suggests the expected
+            variation over the explored temperature ranges is small,
+            being an order of magnitude below the uncertainty due to the
+            χ² fitting alone.
+        </p>
+
+        <p>
+            Although the linear fit correctly suggests a negative
+            temperature dependence, this trend is not robust. It combines
+            one compromised final-session measurement with two measurements
+            lacking their own blank-tube correction (in green), and hence
+            having unknown absolute vertical positions.
+        </p>
+
+        <p>
+            The fitted intercept does not represent a meaningful physical
+            quantity in this context. The dominant uncertainties discussed
+            above, along with considerable temperature drift, render this
+            effect redundant, supporting the standard treatment of
+            temperature as negligible in undergraduate experiments,
+            because it is smaller than the precision achievable with this
+            apparatus.
+        </p>
+
+
+        <h2 class="article-major-heading">
+            Conclusions
+        </h2>
+
+        <p>
+            The phenomenon of optical rotation was observed to be
+            qualitatively consistent with theoretical expectations for a
+            tube of sucrose of fixed length and concentration, agreeing
+            with Malus’s Law.
+        </p>
+
+        <p>
+            The Drude formula parameter A was found to be
+            (2.16 ± 0.02) × 10⁷ ° dm⁻¹ g⁻¹ mL nm², in agreement with the
+            literature value.
+        </p>
+
+        <p>
+            Despite this, systematic uncertainties dominated, hindering
+            the reproducibility of the simple set-up used, and limiting
+            the precision to which this parameter could be found.
+        </p>
+
+        <p>
+            The large phase shifts, however, mean the underlying relation
+            is preserved regardless. This equipment is shown to be effective
+            for demonstrating this regime of physics yet is unsuitable for
+            high precision experiments, like temperature-dependence.
+        </p>
+
+        <p>
+            Future experiments should focus on improving alignment
+            stability and ensuring consistent reference measurements to
+            reduce systematic errors.
+        </p>
+
+
+        <h2 class="article-major-heading">
+            Acknowledgements
+        </h2>
+
+        <p>
+            The author would like to thank Professor Walker for his guidance
+            during the experiment.
+        </p>
+
+        <h2 class="article-major-heading">
+            Error Appendix
+        </h2>
+
+
+        <h3>
+            1. Phase Shift Uncertainties
+        </h3>
+
+        <p>
+            Uncertainties were propagated using the functional approach [6].
+            The contribution from each variable was taken as the change in the
+            calculated quantity when that variable alone was shifted by its
+            uncertainty, with all contributions then added in quadrature. For
+            clarity, uncertainties are denoted with the calculated function as
+            a superscript and the variable as a subscript.
+        </p>
+
+        <p>
+            The Photonics Technologies laser used during the experiment had no
+            uncertainties listed on the manufacturer’s website, hence an
+            approximate error of ± 1 nm was assumed. This was because lasers of
+            the same design had wavelengths which varied by this increment.
+        </p>
+
+        <p>
+            The angle from the rotatable polariser was automatically recorded.
+            Although the software states the angles with up to 16 decimal points,
+            the true uncertainty is unlikely to correspond to the final digit.
+            Since the uncertainty in the angle is expected to be orders of
+            magnitude beneath the other uncertainties in this experiment, it was
+            taken to be negligible.
+        </p>
+
+        <p>
+            A weighted mean for all background data points was used to determine
+            the background intensity. χ² minimisation modelling the data as a
+            constant value, however, consistently yielded large reduced χ². This
+            suggests the background was not randomly fluctuating around a true
+            fixed point. The standard deviation, therefore, was taken as the error
+            in the background measurement, instead of the error on the mean, as it
+            better reflected the physical variation present.
+        </p>
+
+        <p>
+            For all datasets, the uncertainty of the intensity of each degree was
+            taken using the standard error of the mean. Using the functional
+            approach [6], the error in the background was added in quadrature to
+            this value, to account for the additional statistical variation
+            present in all measurements. This yielded the uncertainties used in
+            the phase extraction for each experiment, which are not shown in
+            Table 1 due to their small magnitude.
+        </p>
+
+        <p>
+            Each experiment’s phase shift is defined relative to a corresponding
+            blank tube measurement, taken in each session besides the penultimate.
+            In this case, the blank tube was taken to be the average of the two
+            previous session’s similar results, with the corresponding uncertainty
+            also taken as the average. The corrected phase shift was therefore
+            obtained by subtracting the blank tube phase from the sucrose phase.
+        </p>
+
+        <p>
+            Using the functional approach on this linear operation, this simplifies
+            to adding their errors, <i>α</i><sub>Blank</sub> and
+            <i>α</i><sub>Sucrose</sub> respectively, in quadrature. The corrected
+            phase shift’s uncertainty <i>α</i><sub>φ</sub> was
+        </p>
+
+        <p class="article-equation">
+            <i>α</i><sub>φ</sub> =
+            √(
+            <i>α</i><sub>Sucrose</sub>² +
+            <i>α</i><sub>Blank</sub>² +
+            <i>σ</i>²
+            )
+        </p>
+
+        <p>
+            where <i>σ</i> represents the reproducibility of the experiment.
+            For the same 330° polarising filter, with the same tube, three
+            separate attempts yielded a standard deviation of 1.58°, indicating
+            significant variation between runs. This term, therefore, was included
+            as an additional systematic contribution, representing the alignment
+            sensitivity of the apparatus, and treated as independent of the other
+            uncertainties.
+        </p>
+
+
+        <h3>
+            2. Specific Rotation Uncertainties
+        </h3>
+
+        <p>
+            The uncertainty in the length <i>α</i><sub>L</sub> was obtained,
+            using the error of two independent measurements of uncertainty
+            ± 0.5 mm added in quadrature to give ± 0.7 mm [6].
+        </p>
+
+        <p>
+            The resolution of the mass balance was taken as the uncertainty in
+            the mass, <i>α</i><sub>m</sub>, with a value of ± 0.1 g. Due to
+            practical limitations with volumetric flasks, the uncertainty in
+            the volume, <i>α</i><sub>V</sub>, was taken conservatively to be
+            ± 0.5 mL.
+        </p>
+
+        <p>
+            The uncertainty in the concentration <i>α</i><sub>c</sub> was
+            determined using the functional approach to be
+        </p>
+
+        <p class="article-equation">
+            <i>α</i><sub>c</sub> =
+            √(
+            (<i>α</i><sub>m</sub> / <i>c</i>)² +
+            (<i>α</i><sub>V</sub> / <i>c</i>)²
+            )
+        </p>
+
+        <p>
+            The error in the specific rotation, <i>α</i><sub>α</sub>, was then
+            calculated by
+        </p>
+
+        <p class="article-equation">
+            <i>α</i><sub>α</sub> =
+            √(
+            (<i>α</i><sub>L</sub> / <i>α</i>)² +
+            (<i>α</i><sub>c</sub> / <i>α</i>)² +
+            (<i>α</i><sub>φ</sub> / <i>α</i>)²
+            )
+        </p>
+
+        <p>
+            <i>α</i><sub>theory</sub>, the uncertainty in the expected values,
+            was found by rearranging Eq. 2 for the angle <i>θ</i>, and the same
+            method as above to give
+        </p>
+
+        <p class="article-equation">
+            <i>α</i><sub>theory</sub> =
+            √(
+            (<i>α</i><sub>L</sub><sup>theory</sup>)² +
+            (<i>α</i><sub>c</sub><sup>theory</sup>)² +
+            (<i>α</i><sub>φ</sub><sup>theory</sup>)²
+            )
+        </p>
+
+
+        <h3>
+            3. Temperature Uncertainties
+        </h3>
+
+        <p>
+            The temperature of the tubes was measured before and after the
+            experiment. The average temperature was taken to represent the
+            temperature for that dataset. Half the range was taken as the error:
+            if a temperature fell from 2° to 1°, for instance, it would be taken
+            as (1.5 ± 0.5) °.
+        </p>
+
+        <h2 class="article-major-heading">
+            References
+        </h2>
+
+        <p>
+            [1] S. F. Mason, <em>Molecular Optical Activity and the Chiral
+            Discriminations</em>, Cambridge University Press: Cambridge
+            (1982).
+        </p>
+
+        <p>
+            [2] T. M. Lowry and E. M. Richards,
+            <em>The rotatory dispersive power of organic compounds.
+            Part XIII. Rotatory dispersion of camphorquinone and of sucrose</em>,
+            J. Chem. Soc., 2511–2524 (1924).
+            doi: 10.1039/CT9242502511
+        </p>
+
+        <p>
+            [3] H. Soetedjo and J. Räty,
+            <em>Use of a modified Drude’s equation to investigate the
+            optical rotation property of sugars</em>, Optik 125,
+            7162–7165 (2014).
+            doi: 10.1016/j.ijleo.2014.07.112
+        </p>
+
+        <p>
+            [4] J. C. MacDonald,
+            <em>Method for the accurate determination of specific rotation.
+            Specific rotation of valine and leucine</em>, Can. J. Chem. 47,
+            2739–2746 (1969).
+            doi: 10.1139/v69-456
+        </p>
+
+        <p>
+            [5] M. Nixon and I. G. Hughes,
+            <em>A visual understanding of optical rotation using corn syrup</em>,
+            Eur. J. Phys. 38, 045302 (2017).
+            doi: 10.1088/1361-6404/aa6a0b
+        </p>
+
+        <p>
+            [6] I. G. Hughes and T. P. A. Hase,
+            <em>Measurements and their Uncertainties</em>,
+            Oxford University Press: Oxford (2010).
+        </p>
+
+    </article>
+
+</main>
