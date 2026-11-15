@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+Llama_Space_Programme/build/
+Llama_Space_Programme/dist/
