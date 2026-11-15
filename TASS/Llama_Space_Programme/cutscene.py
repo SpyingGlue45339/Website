@@ -101,18 +101,25 @@ async def run_cutscene(
         )
 
         if os.path.isfile(sound_effect_path):
-
-            sound_effect = pygame.mixer.Sound(sound_effect_path)
-            sound_effect.set_volume(0.8)
-
+            try:
+                if not pygame.mixer.get_init():
+                    pygame.mixer.init()
+                sound_effect = pygame.mixer.Sound(sound_effect_path)
+                sound_effect.set_volume(0.8)
+            except pygame.error as audio_error:
+                # A missing/unavailable browser audio device should not stop
+                # the cutscene from playing.
+                print("Cutscene sound effect could not be loaded:", audio_error)
         else:
-
             print("Warning: Cutscene sound effect was not found: " + sound_effect_filename)
 
     def stop_sound_effect():
 
         if sound_effect_channel is not None:
-            sound_effect_channel.stop()
+            try:
+                sound_effect_channel.stop()
+            except pygame.error:
+                pass
 
     # ----------------------------------
     # DIALOGUE BOX SETTINGS
@@ -392,7 +399,10 @@ async def run_cutscene(
     # This plays once alongside the background music.
     # The background soundtrack itself is controlled by main.py.
     if sound_effect is not None:
-        sound_effect_channel = sound_effect.play()
+        try:
+            sound_effect_channel = sound_effect.play()
+        except pygame.error as audio_error:
+            print("Cutscene sound effect could not play:", audio_error)
 
     # ----------------------------------
     # FADE IN

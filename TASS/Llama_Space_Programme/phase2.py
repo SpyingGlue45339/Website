@@ -781,8 +781,13 @@ async def graphics_init(screen):
         return False
 
     # Only start the music once the launch requirements are met.
-    pygame.mixer.music.load(asset_path("Audio", "bgMusic.ogg"))
-    pygame.mixer.music.play(-1)
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        pygame.mixer.music.load(asset_path("Audio", "bgMusic.ogg"))
+        pygame.mixer.music.play(-1)
+    except pygame.error as audio_error:
+        print("Flight music could not be started:", audio_error)
 
     asteroidExplosionAnimations = [
 
@@ -954,8 +959,12 @@ async def graphics_init(screen):
                     asteroidExplosionAnimations
                 )
 
-                explosionSound = pygame.mixer.Sound(asset_path("Audio", "explosionSound.ogg"))
-                explosionSound.play()
+                try:
+                    if pygame.mixer.get_init():
+                        explosion_sound = pygame.mixer.Sound(asset_path("Audio", "explosionSound.ogg"))
+                        explosion_sound.play()
+                except pygame.error as audio_error:
+                    print("Explosion sound could not play:", audio_error)
 
                 explosionGroup.add(
                     Explosion(
@@ -1018,6 +1027,10 @@ async def run_phase2(screen_surface):
     if not phase_completed:
         return False
 
-    pygame.mixer.music.fadeout(500)
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.fadeout(500)
+    except pygame.error:
+        pass
     print("Phase 2 finished.")
     return True

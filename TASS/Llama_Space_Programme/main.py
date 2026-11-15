@@ -1,12 +1,13 @@
-"""Main entry point for the Llama Space Programme.
+"""Browser-friendly entry point for Totally Accurate Spaceflight Simulator.
 
-Pygame is initialised once here. Every game stage receives and reuses the
-same display surface; individual stages never call pygame.init(),
-pygame.display.set_mode(), or pygame.quit().
+The opening title and cutscenes are loaded before the much larger game stages.
+Each later stage is imported only when it is needed. This reduces the amount
+of image/audio data that the browser has to load before the first cutscene.
 """
 
 import asyncio
 import os
+import traceback
 import pygame
 
 from cutscene import run_cutscene
@@ -14,35 +15,75 @@ from title import run_title_screen
 
 
 def start_cutscene_music(game_folder):
-    """Start the shared cutscene soundtrack and loop it continuously."""
-
+    """Start the shared cutscene soundtrack when browser audio is available."""
     music_path = os.path.join(game_folder, "musiccutscene.ogg")
 
-    pygame.mixer.music.load(music_path)
-    pygame.mixer.music.set_volume(0.55)
-    pygame.mixer.music.play(-1)
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        pygame.mixer.music.load(music_path)
+        pygame.mixer.music.set_volume(0.55)
+        pygame.mixer.music.play(-1)
+    except pygame.error as audio_error:
+        # Audio must never prevent the game itself from running in a browser.
+        print("Cutscene music could not be started:", audio_error)
 
 
 def stop_cutscene_music():
-    """Stop the cutscene soundtrack."""
+    """Stop the cutscene soundtrack, if the audio subsystem is available."""
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.stop()
+    except pygame.error as audio_error:
+        print("Cutscene music could not be stopped:", audio_error)
 
-    pygame.mixer.music.stop()
+
+async def show_error_screen(screen, stage_name):
+    """Keep a readable message on screen if a stage raises an exception."""
+    try:
+        title_font = pygame.font.Font(None, 52)
+        body_font = pygame.font.Font(None, 30)
+        small_font = pygame.font.Font(None, 24)
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+                if event.type == pygame.KEYDOWN and event.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+                    return
+
+            screen.fill((15, 13, 22))
+            title_surface = title_font.render("THE SIMULATOR ENCOUNTERED AN ERROR", True, (255, 105, 105))
+            stage_surface = body_font.render("Stage: " + stage_name, True, (245, 230, 205))
+            detail_surface = small_font.render("Open the browser console (F12) for the Python traceback.", True, (205, 205, 215))
+            exit_surface = small_font.render("Press ESC or ENTER to close.", True, (205, 205, 215))
+
+            screen.blit(title_surface, title_surface.get_rect(center=(screen.get_width() // 2, 250)))
+            screen.blit(stage_surface, stage_surface.get_rect(center=(screen.get_width() // 2, 325)))
+            screen.blit(detail_surface, detail_surface.get_rect(center=(screen.get_width() // 2, 390)))
+            screen.blit(exit_surface, exit_surface.get_rect(center=(screen.get_width() // 2, 430)))
+            pygame.display.flip()
+            await asyncio.sleep(0)
+    except Exception:
+        # If the display itself is the cause, retain the original traceback.
+        return
 
 
 async def main():
     game_folder = os.path.dirname(os.path.abspath(__file__))
+
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption("Totally Accurate Spaceflight Simulator")
 
-    try:
-        # Import the game stages only after the shared display exists.
-        # Their module-level assets and fonts can then use the active display.
-        import phase1
-        import gambling
-        import phase2
-        import phase3
+    current_stage = "Pygame startup"
 
+    try:
+        # Do not import phase1, gambling, phase2 or phase3 here.
+        # Those modules load many large images and sounds at import time.
+        # The browser only needs the title and opening cutscenes initially.
+
+        current_stage = "Title screen"
         print("Starting Title Screen...")
         if not await run_title_screen(screen):
             return
@@ -75,18 +116,15 @@ async def main():
             ),
         ]
 
-        # Start the soundtrack ONCE for the entire opening batch.
-        # It will continue uninterrupted as the player advances between scenes.
+        current_stage = "Opening cutscene soundtrack"
         print("Starting opening cutscene soundtrack...")
         start_cutscene_music(game_folder)
 
         for index, scene in enumerate(opening_cutscenes, start=1):
-            print(f"Starting Cutscene {index}...")
+            current_stage = "Opening cutscene " + str(index)
+            print("Starting Cutscene", index, "...")
             background, sprite, dialogue, motion, scale, position = scene
-
-            # Each opening cutscene has its own matching sound clip.
-            # For example, Cutscene 2 plays cutscene2.ogg.
-            sound_effect_filename = f"cutscene{index}.ogg"
+            sound_effect_filename = "cutscene" + str(index) + ".ogg"
 
             if not await run_cutscene(
                 screen,
@@ -100,12 +138,15 @@ async def main():
             ):
                 return
 
-        # Stop the shared opening soundtrack after the complete first batch.
         stop_cutscene_music()
 
-        # Phase 1 can return to the shop after Blackjack as many times as
-        # the player chooses. It never shuts down or recreates Pygame.
+        # Import Phase 1 only when the player has finished the opening story.
+        current_stage = "Loading Phase 1"
+        print("Loading Phase 1...")
+        import phase1
+
         while True:
+            current_stage = "Phase 1: shops"
             print("Starting Phase 1...")
             gambling_requested = await phase1.run_phase1(screen)
 
@@ -116,15 +157,20 @@ async def main():
                 print("Phase 1 finished. Continuing to the next cutscene...")
                 break
 
-            print("Starting The Golden Ace - Blackjack...")
+            current_stage = "Loading Blackjack"
+            print("Loading The Golden Ace - Blackjack...")
+            import gambling
+
+            current_stage = "Blackjack"
             if not await gambling.run_blackjack(screen):
                 return
             print("Returning to Phase 1...")
 
-        # Cutscene 7 has the same soundtrack, played as a separate sequence.
+        current_stage = "Cutscene 7 soundtrack"
         print("Starting Cutscene 7...")
         start_cutscene_music(game_folder)
 
+        current_stage = "Cutscene 7"
         if not await run_cutscene(
             screen,
             "cutscene7.png",
@@ -139,14 +185,21 @@ async def main():
 
         stop_cutscene_music()
 
+        current_stage = "Loading Phase 2"
+        print("Loading Phase 2...")
+        import phase2
+
+        current_stage = "Phase 2"
         print("Starting Phase 2...")
         if not await phase2.run_phase2(screen):
             return
 
-        # The Phase 2-to-Phase 3 transition also uses the cutscene soundtrack.
-        print("Starting Cutscene 8 (Phase 2 to Phase 3)...")
+        current_stage = "Cutscene 8 soundtrack"
+        print("Starting Cutscene 8 soundtrack...")
         start_cutscene_music(game_folder)
 
+        current_stage = "Cutscene 8"
+        print("Starting Cutscene 8 (Phase 2 to Phase 3)...")
         if not await run_cutscene(
             screen,
             "cutscene5.png",
@@ -161,19 +214,31 @@ async def main():
 
         stop_cutscene_music()
 
+        current_stage = "Loading Phase 3"
+        print("Loading Phase 3...")
+        import phase3
+
+        current_stage = "Phase 3"
         print("Starting Phase 3...")
         if not await phase3.run_phase3(screen):
             return
 
         print("Game finished!")
 
+    except Exception:
+        print("\n============================================================")
+        print("THE GAME CRASHED DURING:", current_stage)
+        print("Full Python traceback:")
+        traceback.print_exc()
+        print("============================================================\n")
+        await show_error_screen(screen, current_stage)
+
     finally:
-        # Stop any cutscene or game music before Pygame shuts down.
         try:
-            pygame.mixer.music.stop()
+            if pygame.mixer.get_init():
+                pygame.mixer.music.stop()
         except pygame.error:
             pass
-
         pygame.quit()
 
 

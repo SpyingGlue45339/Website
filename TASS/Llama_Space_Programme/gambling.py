@@ -972,8 +972,13 @@ async def run_blackjack(screen_surface):
     round_result = None
     question_selection = "YES"
 
-    pygame.mixer.music.load(casino_music_path)
-    pygame.mixer.music.play(-1)
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        pygame.mixer.music.load(casino_music_path)
+        pygame.mixer.music.play(-1)
+    except pygame.error as audio_error:
+        print("Casino music could not be started:", audio_error)
 
     while running:
 
@@ -1419,5 +1424,9 @@ async def run_blackjack(screen_surface):
 
     # Save the casino balance for the shop phase.
     global_variables.money = moneytotal
-    pygame.mixer.music.fadeout(500)
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.fadeout(500)
+    except pygame.error:
+        pass
     return not casino_window_closed

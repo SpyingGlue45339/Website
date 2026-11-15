@@ -1730,9 +1730,14 @@ async def run_phase3(screen_surface):
         )
 
     if os.path.isfile(martian_music_path) and not game_over:
-        pygame.mixer.music.load(martian_music_path)
-        pygame.mixer.music.set_volume(0.45)
-        pygame.mixer.music.play(-1)
+        try:
+            if not pygame.mixer.get_init():
+                pygame.mixer.init()
+            pygame.mixer.music.load(martian_music_path)
+            pygame.mixer.music.set_volume(0.45)
+            pygame.mixer.music.play(-1)
+        except pygame.error as audio_error:
+            print("Mars music could not be started:", audio_error)
     elif not os.path.isfile(martian_music_path):
         print("Could not find audio file: martian.ogg")
 
@@ -1821,5 +1826,9 @@ async def run_phase3(screen_surface):
     global_variables.bases = bases
     global_variables.turns_on_mars = turns_completed
 
-    pygame.mixer.music.fadeout(1000)
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.fadeout(1000)
+    except pygame.error:
+        pass
     return not phase3_window_closed and not game_over

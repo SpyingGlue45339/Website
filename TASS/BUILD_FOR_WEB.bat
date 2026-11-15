@@ -13,5 +13,5 @@ echo.
 echo Build complete.
 echo Your website files are in:
 echo Llama_Space_Programme\build\web\
-echo Copy the CONTENTS of that folder into your website's game folder.
+echo Copy the CONTENTS of that folder into your website's TASS\game folder.
 pause

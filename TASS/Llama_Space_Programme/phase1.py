@@ -24,8 +24,14 @@ shopping_music_path = os.path.join(folder, "shopping.ogg")
 
 # Load the purchase sound effect.
 buying_sound_path = os.path.join(folder, "buying.ogg")
-buying_sound = pygame.mixer.Sound(buying_sound_path)
-buying_sound.set_volume(0.8)
+try:
+    if not pygame.mixer.get_init():
+        pygame.mixer.init()
+    buying_sound = pygame.mixer.Sound(buying_sound_path)
+    buying_sound.set_volume(0.8)
+except pygame.error as audio_error:
+    buying_sound = None
+    print("Purchase sound could not be loaded:", audio_error)
 
 font_path = os.path.join(folder, "ShareTechMono-Regular.ttf")
 
@@ -453,7 +459,11 @@ def buy(item):
     item_effect(item)
 
     # Play the purchase sound only after a successful purchase.
-    buying_sound.play()
+    if buying_sound is not None:
+        try:
+            buying_sound.play()
+        except pygame.error as audio_error:
+            print("Purchase sound could not play:", audio_error)
 
     status_message = "Purchased: " + item[0]
 
@@ -756,9 +766,14 @@ async def run_phase1(screen_surface):
     scrollbar_drag_grab = 0
     status_message = ""
 
-    pygame.mixer.music.load(shopping_music_path)
-    pygame.mixer.music.set_volume(0.45)
-    pygame.mixer.music.play(-1)
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        pygame.mixer.music.load(shopping_music_path)
+        pygame.mixer.music.set_volume(0.45)
+        pygame.mixer.music.play(-1)
+    except pygame.error as audio_error:
+        print("Shop music could not be started:", audio_error)
 
     while running:
         clock.tick(fps)
@@ -867,7 +882,11 @@ async def run_phase1(screen_surface):
         await asyncio.sleep(0)
 
     # Fade out the shop music. Pygame itself stays running for the next phase.
-    pygame.mixer.music.fadeout(1000)
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.fadeout(1000)
+    except pygame.error:
+        pass
 
     # Keep the player's resources available to every later phase.
     global_variables.money = money

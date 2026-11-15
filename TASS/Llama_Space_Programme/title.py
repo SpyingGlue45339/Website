@@ -13,15 +13,30 @@ async def run_title_screen(screen):
     # Find folder containing images and music
     game_folder = os.path.dirname(os.path.abspath(__file__))
 
-    # Load title music
-    pygame.mixer.music.load(
-        os.path.join(game_folder, "title.ogg")
-    )
+    # Audio is optional: browsers may not have unlocked the audio device yet.
+    # The title screen and the rest of the game must still work without sound.
+    title_music_available = False
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        pygame.mixer.music.load(
+            os.path.join(game_folder, "title.ogg")
+        )
+        pygame.mixer.music.set_volume(0.5)
+        title_music_available = True
+    except pygame.error as audio_error:
+        print("Title music could not be loaded:", audio_error)
 
     # Browsers block autoplay until the player interacts with the game.
     # Start the soundtrack on the first key press or mouse click instead.
-    pygame.mixer.music.set_volume(0.5)
     title_music_started = False
+
+    def fadeout_title_music(milliseconds):
+        try:
+            if title_music_available and pygame.mixer.get_init():
+                pygame.mixer.music.fadeout(milliseconds)
+        except pygame.error as audio_error:
+            print("Title music could not fade out:", audio_error)
 
     # Load background
     background_image = pygame.image.load(
@@ -91,32 +106,36 @@ async def run_title_screen(screen):
         for event in pygame.event.get():
 
             if (
-                not title_music_started
+                title_music_available
+                and not title_music_started
                 and event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN)
             ):
-                pygame.mixer.music.play(-1)
-                title_music_started = True
+                try:
+                    pygame.mixer.music.play(-1)
+                    title_music_started = True
+                except pygame.error as audio_error:
+                    print("Title music could not start:", audio_error)
 
             if event.type == pygame.QUIT:
 
-                pygame.mixer.music.fadeout(500)
+                fadeout_title_music(500)
                 return False
 
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_ESCAPE:
-                    pygame.mixer.music.fadeout(500)
+                    fadeout_title_music(500)
                     return False
 
                 if event.key in (pygame.K_RETURN, pygame.K_SPACE):
-                    pygame.mixer.music.fadeout(1000)
+                    fadeout_title_music(1000)
                     return True
 
             if event.type == pygame.MOUSEBUTTONDOWN:
 
                 if event.button == 1 and mouse_over_button:
 
-                    pygame.mixer.music.fadeout(1000)
+                    fadeout_title_music(1000)
                     return True
 
         # Draw background
