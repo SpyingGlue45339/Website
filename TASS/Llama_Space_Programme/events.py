@@ -6,7 +6,7 @@ import global_variables
 # This is called by Phase 3 after every turn.
 def should_trigger_event(round_number):
 
-    if round_number % 5 == 0:
+    if round_number % 6 == 0:
 
         random_number = random.randint(1, 100)
 
@@ -77,7 +77,7 @@ def run_random_event(
     if numb == 1 or numb == 32 or numb == 33 or numb == 34:
 
         event_title = "Llama dysentry"
-        event_description = "'Sometimes, when you've gotta go, you've gotta go' - Bear in the Big Blue House"
+        event_description = "'Sometimes, when you've gotta go, you've gotta go' - Bear in the Big Blue House \nSometimes it's hard to keep your bowels in check. But when you checked your spacesuit, you wished you hadn't looked."
 
         medical_kit_found = False
         inventory = getattr(global_variables, "inventory", [])

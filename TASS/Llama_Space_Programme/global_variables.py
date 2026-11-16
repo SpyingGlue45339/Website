@@ -1,6 +1,6 @@
 # Starting game values
 
-money = 125000
+money = 120000
 
 food = 100
 water = 100

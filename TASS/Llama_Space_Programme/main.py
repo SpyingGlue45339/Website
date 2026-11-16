@@ -334,7 +334,7 @@ async def main():
             "Cutscene 7",
             "cutscene7.png",
             "sprite7.png",
-            "You must build your rocket, travel to Mars, and conquer space for the llama race...",
+            "Your journey continues... into outer space!",
             "zoom_in",
             1,
             (400, 300),
