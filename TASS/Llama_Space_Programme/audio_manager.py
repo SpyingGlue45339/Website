@@ -12,6 +12,13 @@ import pygame
 AUDIO_READY = False
 CURRENT_MUSIC_PATH = None
 
+# Use a conventional browser output format and a larger SDL audio buffer.
+# The old 512-sample buffer was particularly susceptible to brief underruns
+# during heavier Phase 1 and Phase 3 frames.
+MIXER_FREQUENCY = 44100
+MIXER_CHANNELS = 2
+MIXER_BUFFER = 4096
+
 
 def initialise_from_user_action():
     """Initialise the shared mixer if startup did not create it."""
@@ -20,16 +27,23 @@ def initialise_from_user_action():
     try:
         if pygame.mixer.get_init() is None:
             pygame.mixer.init(
-                frequency=44100,
+                frequency=MIXER_FREQUENCY,
                 size=-16,
-                channels=2,
-                buffer=512
+                channels=MIXER_CHANNELS,
+                buffer=MIXER_BUFFER
             )
+            pygame.mixer.set_num_channels(16)
 
         AUDIO_READY = pygame.mixer.get_init() is not None
 
         if AUDIO_READY:
-            print("[AUDIO] Shared mixer is ready.", flush=True)
+            pygame.mixer.set_num_channels(16)
+            print(
+                "[AUDIO] Shared mixer is ready:",
+                MIXER_FREQUENCY, "Hz,", MIXER_CHANNELS, "channels,",
+                "buffer", MIXER_BUFFER,
+                flush=True
+            )
         else:
             print("[AUDIO] Mixer initialisation returned no active device.", flush=True)
 

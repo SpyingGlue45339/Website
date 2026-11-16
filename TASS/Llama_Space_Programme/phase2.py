@@ -1,6 +1,5 @@
 
 import asyncio
-import json
 import os
 import pygame
 import random
@@ -493,44 +492,37 @@ class Asteroid(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
 class GifAnimation:
+    """Load a numbered sequence of PNG frames for a small explosion animation.
 
-    def __init__(self, frames_folder, scale=1):
-        """Load pre-extracted PNG frames without a browser-incompatible dependency."""
+    The original GIFs use fixed frame timings. Keeping those timings here avoids
+    depending on JSON sidecar files being included in a Pygbag web archive.
+    """
 
-        duration_path = os.path.join(frames_folder, "durations.json")
-
-        with open(duration_path, "r", encoding="utf-8") as duration_file:
-            frame_durations_ms = json.load(duration_file)
-
-        frame_filenames = sorted(
-            filename
-            for filename in os.listdir(frames_folder)
-            if filename.lower().endswith(".png")
-        )
-
-        if not frame_filenames:
-            raise RuntimeError("No PNG animation frames found in: " + frames_folder)
-
-        if len(frame_filenames) != len(frame_durations_ms):
-            raise RuntimeError("Animation frame timings do not match the PNG frames in: " + frames_folder)
-
+    def __init__(self, frames_folder, frame_count, frame_duration, scale=1):
         self.frames = []
         self.durations = []
 
-        for frame_index, frame_filename in enumerate(frame_filenames):
+        for frame_index in range(frame_count):
+            frame_filename = "frame_{:03d}.png".format(frame_index)
             frame_path = os.path.join(frames_folder, frame_filename)
-            frame_surface = pygame.image.load(frame_path).convert_alpha()
 
+            if not os.path.isfile(frame_path):
+                raise FileNotFoundError(
+                    "Phase 2 explosion frame is missing: " + frame_path
+                )
+
+            frame_surface = pygame.image.load(frame_path).convert_alpha()
             scaled_width = max(1, int(frame_surface.get_width() * scale))
             scaled_height = max(1, int(frame_surface.get_height() * scale))
-
             frame_surface = pygame.transform.scale(
                 frame_surface,
                 (scaled_width, scaled_height)
             )
 
             self.frames.append(frame_surface)
-            self.durations.append(frame_durations_ms[frame_index] / 1000)
+            self.durations.append(float(frame_duration))
+
+
 class Explosion(pygame.sprite.Sprite):
 
     def __init__(self, position, animation):
@@ -805,16 +797,28 @@ async def graphics_init(screen):
         volume=0.8
     )
 
+    print("[PHASE 2] Loading explosion animation frames.", flush=True)
     asteroidExplosionAnimations = [
-
-    GifAnimation(asset_path("Images", "explosion1_frames"), 0.4),
-    GifAnimation(asset_path("Images", "explosion3_frames"), 0.4)
+        GifAnimation(
+            asset_path("Images", "explosion1_frames"),
+            frame_count=6,
+            frame_duration=0.15,
+            scale=0.4
+        ),
+        GifAnimation(
+            asset_path("Images", "explosion3_frames"),
+            frame_count=12,
+            frame_duration=0.10,
+            scale=0.4
+        )
     ]
+    print("[PHASE 2] Explosion animations loaded.", flush=True)
 
 
 
-    # Create base resolution surface
-    baseScreen = pygame.Surface(standardResolution)
+    # Create base resolution surface.
+    print("[PHASE 2] Creating flight surfaces and rocket.", flush=True)
+    baseScreen = pygame.Surface(tuple(standardResolution))
 
     # Load image ONCE
     player = pygame.image.load(
@@ -857,6 +861,7 @@ async def graphics_init(screen):
 
     hud = HUD()
     laser_equipped = has_laser_blaster()
+    print("[PHASE 2] Rocket and HUD initialised; entering flight loop.", flush=True)
 
     shootCooldown = 0.5
     laserShotTime = 0

@@ -609,7 +609,6 @@ def outside(mouse_position):
             text(shop_name, font_medium, (255, 220, 130), door.centerx, door.centery, True)
 
     text("Click a shop to enter", font_small, (40, 34, 30), 25, 690)
-    text("G: casino   |   ESC: next phase", font_small, (40, 34, 30), 865, 690)
     text("I: inventory", font_small, (40, 34, 30), 1120, 690)
 
 
@@ -798,13 +797,6 @@ async def run_phase1(screen_surface):
                 break
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_g and current_screen == "outside":
-                    # Keyboard fallback for the casino sign, useful in the browser.
-                    gambling_requested = True
-                    running = False
-                    print("[GAMBLING] G key selected Blackjack.", flush=True)
-                    break
-
                 if event.key == pygame.K_ESCAPE:
                     if current_screen == "inventory":
                         current_screen = previous_screen
@@ -830,8 +822,7 @@ async def run_phase1(screen_surface):
                         current_screen = "inventory"
                         scrollbar_dragging = False
 
-                # Shop purchases remain mouse-driven. G is a casino shortcut
-                # only while outside; ESC and I retain their original meanings.
+                # Shop purchases remain mouse-driven; ESC and I retain their original meanings.
 
             elif event.type == pygame.MOUSEWHEEL and current_screen == "inside":
                 # Scroll when the pointer is over the item list or its bar.

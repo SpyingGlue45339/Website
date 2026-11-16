@@ -44,60 +44,96 @@ OPENING_CUTSCENES = [
 ]
 
 
-async def show_error_screen(screen, stage_name):
-    """Show a clear in-game error screen after an unexpected Python error."""
-    try:
-        title_font = pygame.font.Font(None, 48)
-        body_font = pygame.font.Font(None, 30)
-        small_font = pygame.font.Font(None, 23)
+async def show_error_screen(screen, stage_name, error_details):
+    """Show the actual Python traceback on-screen so browser tools are optional."""
+    title_font = pygame.font.Font(None, 42)
+    stage_font = pygame.font.Font(None, 27)
+    body_font = pygame.font.Font(None, 19)
+    hint_font = pygame.font.Font(None, 20)
 
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+    screen_width, screen_height = screen.get_size()
+    margin_x = 34
+    text_width = screen_width - margin_x * 2
+
+    # Wrap each traceback line by measured pixel width, not character count.
+    wrapped_lines = []
+    for original_line in str(error_details).splitlines():
+        remaining = original_line if original_line else " "
+        current = ""
+        for word in remaining.split(" "):
+            candidate = word if not current else current + " " + word
+            if body_font.size(candidate)[0] <= text_width:
+                current = candidate
+            else:
+                if current:
+                    wrapped_lines.append(current)
+                current = word
+        if current:
+            wrapped_lines.append(current)
+
+    if not wrapped_lines:
+        wrapped_lines = ["No traceback text was captured."]
+
+    line_height = body_font.get_linesize() + 2
+    visible_line_count = max(1, (screen_height - 245) // line_height)
+    scroll_offset = max(0, len(wrapped_lines) - visible_line_count)
+    clock = pygame.time.Clock()
+
+    print("[CRASH] Error details shown on the game screen.", flush=True)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
+            if event.type == pygame.KEYDOWN:
+                if event.key in (pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_SPACE):
                     return
-                if event.type == pygame.KEYDOWN and event.key in (
-                    pygame.K_ESCAPE,
-                    pygame.K_RETURN,
-                    pygame.K_SPACE
-                ):
-                    return
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    return
+                if event.key in (pygame.K_UP, pygame.K_PAGEUP):
+                    scroll_offset = max(0, scroll_offset - 3)
+                elif event.key in (pygame.K_DOWN, pygame.K_PAGEDOWN):
+                    scroll_offset = min(
+                        max(0, len(wrapped_lines) - visible_line_count),
+                        scroll_offset + 3
+                    )
+                elif event.key == pygame.K_HOME:
+                    scroll_offset = 0
+                elif event.key == pygame.K_END:
+                    scroll_offset = max(0, len(wrapped_lines) - visible_line_count)
 
-            screen.fill((15, 13, 22))
+        screen.fill((15, 13, 22))
+        title_surface = title_font.render(
+            "THE SIMULATOR ENCOUNTERED AN ERROR", True, (255, 105, 105)
+        )
+        screen.blit(title_surface, title_surface.get_rect(center=(screen_width // 2, 36)))
 
-            title_surface = title_font.render(
-                "THE SIMULATOR ENCOUNTERED AN ERROR",
-                True,
-                (255, 105, 105)
-            )
-            stage_surface = body_font.render(
-                "Stage: " + stage_name,
-                True,
-                (245, 230, 205)
-            )
-            detail_surface = small_font.render(
-                "Open the browser console (F12) for the Python traceback.",
-                True,
-                (205, 205, 215)
-            )
-            exit_surface = small_font.render(
-                "Press ESC, ENTER or click to close.",
-                True,
-                (205, 205, 215)
-            )
+        stage_surface = stage_font.render("Stage: " + str(stage_name), True, (245, 230, 205))
+        screen.blit(stage_surface, stage_surface.get_rect(center=(screen_width // 2, 78)))
 
-            screen.blit(title_surface, title_surface.get_rect(center=(640, 245)))
-            screen.blit(stage_surface, stage_surface.get_rect(center=(640, 315)))
-            screen.blit(detail_surface, detail_surface.get_rect(center=(640, 385)))
-            screen.blit(exit_surface, exit_surface.get_rect(center=(640, 430)))
+        hint = hint_font.render(
+            "Python traceback (UP/DOWN to scroll; ESC to close)",
+            True, (205, 205, 215)
+        )
+        screen.blit(hint, (margin_x, 112))
 
-            pygame.display.flip()
-            await asyncio.sleep(0)
+        visible_lines = wrapped_lines[scroll_offset:scroll_offset + visible_line_count]
+        y = 145
+        for line in visible_lines:
+            line_surface = body_font.render(line, True, (235, 235, 240))
+            screen.blit(line_surface, (margin_x, y))
+            y += line_height
 
-    except Exception:
-        # Preserve the original traceback in the browser console.
-        return
+        footer = hint_font.render(
+            "Lines {}–{} of {}".format(
+                scroll_offset + 1,
+                min(len(wrapped_lines), scroll_offset + visible_line_count),
+                len(wrapped_lines)
+            ),
+            True, (150, 150, 165)
+        )
+        screen.blit(footer, (margin_x, screen_height - 34))
+
+        pygame.display.flip()
+        clock.tick(30)
+        await asyncio.sleep(0)
 
 
 async def play_cutscene(
@@ -137,7 +173,7 @@ async def main():
     # browser therefore waits for its first real page interaction before this
     # code starts. Initialise Pygame normally at that point so SDL's audio
     # device is created inside the browser's permitted media session.
-    pygame.mixer.pre_init(44100, -16, 2, 1024)
+    pygame.mixer.pre_init(44100, -16, 2, 4096)
     initialised_count, failed_count = pygame.init()
 
     print(
@@ -151,9 +187,13 @@ async def main():
     mixer_details = pygame.mixer.get_init()
     print("[AUDIO] Mixer at startup:", mixer_details, flush=True)
 
+    if mixer_details is not None:
+        pygame.mixer.set_num_channels(16)
+
     if mixer_details is None:
         try:
-            pygame.mixer.init(44100, -16, 2, 1024)
+            pygame.mixer.init(44100, -16, 2, 4096)
+            pygame.mixer.set_num_channels(16)
             print("[AUDIO] Explicit mixer fallback succeeded:", pygame.mixer.get_init(), flush=True)
         except pygame.error as audio_error:
             print("[AUDIO] Explicit mixer fallback failed:", audio_error, flush=True)
@@ -366,12 +406,13 @@ async def main():
             print("[FLOW] Phase 3 ended early.", flush=True)
 
     except Exception:
+        error_details = traceback.format_exc()
         print("\n============================================================", flush=True)
         print("[CRASH] THE GAME CRASHED DURING:", current_stage, flush=True)
         print("[CRASH] Full Python traceback:", flush=True)
-        traceback.print_exc()
+        print(error_details, flush=True)
         print("============================================================\n", flush=True)
-        await show_error_screen(screen, current_stage)
+        await show_error_screen(screen, current_stage, error_details)
 
     finally:
         audio_manager.stop_music()
