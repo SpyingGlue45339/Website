@@ -1,7 +1,11 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/CapyHeader.png">
     <title>Edward's Website</title>
@@ -9,7 +13,7 @@
 
 <body>
 
-    <header>
+<header>
 
     <div class="title-area">
 
@@ -26,11 +30,10 @@
         <a href="index.html">Home</a>
         <a href="projects.html" class="active">Projects</a>
         <a href="blog.html">Blog</a>
-        <a href="about.html" >About</a>
+        <a href="about.html">About</a>
 
     </nav>
 
-    
     <img
         src="images/CapyHeader.png"
         alt="Capybara"
@@ -38,25 +41,44 @@
 
 </header>
 
-    <main>
-    <div class="game-container">
+<main>
+
+    <div class="game-container" style="width: 90%; height: 90vh; margin: 0 auto; overflow: hidden;">
 
         <iframe
             src="TASS/Llama_Space_Programme/build/web/index.html"
-            width="100%"
-            height="720"
+            title="Llama Space Programme"
+            style="width: 100%; height: 100%; border: none; display: block;"
+            scrolling="no"
             allow="autoplay; fullscreen"
             allowfullscreen>
         </iframe>
 
     </div>
-    <h1>Credits </h1>
-    <p>This was not a solo project: I would like to thank Ethan and George (plus Charles I guess) for their
-        delightful and significant contributions to this project. I am merely putting this here
-        because we want to play the game and this is an easy way to access it. They were the greatest team a man could ask for, full of grit
-        , functioning brains, and the boldness to enable my wildest dreams to be realised. Except for Charles.
-    </p>
-    </main>
+    <p></p>
+    <p></p>
+    <p></p>
+    <article class="article">
+
+        <div class="article-summary">
+
+            <h2>
+                Credits
+            </h2>
+
+            <p>
+                This was not a solo project: I would like to thank Ethan and George (plus Charles I guess) for their
+                delightful and significant contributions to this project. I am merely putting this here
+                because we want to play the game and this is an easy way to access it. They were the greatest team a man could ask for, full of grit
+                , functioning brains, and the boldness to enable my wildest dreams to be realised. Except for Charles.
+            </p>
+
+        </div>
+
+    </article>
+
+</main>
+
 <footer>
 
     <p>&copy; 2026 Edward</p>
@@ -72,5 +94,4 @@
 </footer>
 
 </body>
-
 </html>
