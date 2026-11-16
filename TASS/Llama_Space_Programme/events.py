@@ -348,7 +348,7 @@ def run_random_event(
     elif numb == 26:
 
         event_title = "A questionable business opportunity"
-        event_description = "A small alien comes up to youand offers to sell you a revolutionary new water filtration system. It promises to remove 99.9 percent of impurities, improve your life expectancy, and make your teeth considerably whiter. You politely decline. The alien looks offended and asks whether you would at least like to hear about its extended warranty."
+        event_description = "A small alien comes up to you and offers to sell you a revolutionary new water filtration system. It promises to remove 99.9 percent of impurities, improve your life expectancy, and make your teeth considerably whiter. You politely decline. The alien looks offended and asks whether you would at least like to hear about its extended warranty."
 
         event_subtitle = "No change"
 
