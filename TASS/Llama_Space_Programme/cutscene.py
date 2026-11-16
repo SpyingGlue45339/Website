@@ -2,6 +2,8 @@ import asyncio
 import pygame
 import os
 
+import audio_manager
+
 
 async def run_cutscene(
     screen,
@@ -101,17 +103,11 @@ async def run_cutscene(
         )
 
         if os.path.isfile(sound_effect_path):
-            try:
-                if not pygame.mixer.get_init():
-                    pygame.mixer.init()
-                sound_effect = pygame.mixer.Sound(sound_effect_path)
-                sound_effect.set_volume(0.8)
-            except pygame.error as audio_error:
-                # A missing/unavailable browser audio device should not stop
-                # the cutscene from playing.
-                print("Cutscene sound effect could not be loaded:", audio_error)
+            sound_effect = audio_manager.load_sound(sound_effect_path, volume=0.8)
+            if sound_effect is None:
+                print("[AUDIO] Cutscene sound effect unavailable:", sound_effect_filename, flush=True)
         else:
-            print("Warning: Cutscene sound effect was not found: " + sound_effect_filename)
+            print("[AUDIO] Cutscene sound effect was not found: " + sound_effect_filename, flush=True)
 
     def stop_sound_effect():
 
@@ -399,10 +395,14 @@ async def run_cutscene(
     # This plays once alongside the background music.
     # The background soundtrack itself is controlled by main.py.
     if sound_effect is not None:
-        try:
-            sound_effect_channel = sound_effect.play()
-        except pygame.error as audio_error:
-            print("Cutscene sound effect could not play:", audio_error)
+        sound_effect_channel = audio_manager.play_sound(sound_effect)
+        print(
+            "[AUDIO] Cutscene effect:",
+            sound_effect_filename,
+            "| channel started:",
+            sound_effect_channel is not None,
+            flush=True
+        )
 
     # ----------------------------------
     # FADE IN
@@ -476,9 +476,11 @@ async def run_cutscene(
                     return False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-
                 if event.button == 1:
                     scene_finished = True
+
+            if event.type == pygame.FINGERDOWN:
+                scene_finished = True
 
         camera_progress = animation_time / motion_duration
 

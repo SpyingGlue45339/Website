@@ -1,245 +1,382 @@
-"""Browser-friendly entry point for Totally Accurate Spaceflight Simulator.
+"""Main stage controller for Totally Accurate Spaceflight Simulator.
 
-The opening title and cutscenes are loaded before the much larger game stages.
-Each later stage is imported only when it is needed. This reduces the amount
-of image/audio data that the browser has to load before the first cutscene.
+One Pygame display and one mixer are shared by every stage. Each playable
+stage is asynchronous and yields to the browser every frame.
 """
 
 import asyncio
 import os
 import traceback
+
 import pygame
 
+import audio_manager
 from cutscene import run_cutscene
 from title import run_title_screen
 
 
-def start_cutscene_music(game_folder):
-    """Start the shared cutscene soundtrack when browser audio is available."""
-    music_path = os.path.join(game_folder, "musiccutscene.ogg")
-
-    try:
-        if not pygame.mixer.get_init():
-            pygame.mixer.init()
-        pygame.mixer.music.load(music_path)
-        pygame.mixer.music.set_volume(0.55)
-        pygame.mixer.music.play(-1)
-    except pygame.error as audio_error:
-        # Audio must never prevent the game itself from running in a browser.
-        print("Cutscene music could not be started:", audio_error)
-
-
-def stop_cutscene_music():
-    """Stop the cutscene soundtrack, if the audio subsystem is available."""
-    try:
-        if pygame.mixer.get_init():
-            pygame.mixer.music.stop()
-    except pygame.error as audio_error:
-        print("Cutscene music could not be stopped:", audio_error)
+OPENING_CUTSCENES = [
+    (
+        "cutscene1.png", "sprite.png",
+        "You are Professor Leopold Livingstone Llama, a lecturer emeritus in mammalian 17th Century literature. But in your many readings and musings of critical theory, you discovered a terrible truth...",
+        "pan_left", 1.1, (100, 400)
+    ),
+    (
+        "cutscene2.png", "sprite2.png",
+        "Many animals have travelled into space. Dogs. Monkeys. Cats. Even the humble tardigrade...",
+        "pan_right", 1.1, (100, 400)
+    ),
+    (
+        "cutscene3.png", "sprite3.png",
+        "But despite President L Bee J's civil rights advancements, no llamas have ever been to space...",
+        "zoom_in", 0.8, (600, 200)
+    ),
+    (
+        "cutscene4.png", "sprite2.png",
+        "Inspired by the LLM movement, you seek to right this historic wrong...",
+        "pan_right", 0.4, None
+    ),
+    (
+        "cutscene5.png", "sprite2.png",
+        "You must build your rocket, travel to Mars, and conquer space for the llama race.",
+        "pan_left", 0.4, None
+    ),
+]
 
 
 async def show_error_screen(screen, stage_name):
-    """Keep a readable message on screen if a stage raises an exception."""
+    """Show a clear in-game error screen after an unexpected Python error."""
     try:
-        title_font = pygame.font.Font(None, 52)
+        title_font = pygame.font.Font(None, 48)
         body_font = pygame.font.Font(None, 30)
-        small_font = pygame.font.Font(None, 24)
+        small_font = pygame.font.Font(None, 23)
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-                if event.type == pygame.KEYDOWN and event.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+                if event.type == pygame.KEYDOWN and event.key in (
+                    pygame.K_ESCAPE,
+                    pygame.K_RETURN,
+                    pygame.K_SPACE
+                ):
+                    return
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     return
 
             screen.fill((15, 13, 22))
-            title_surface = title_font.render("THE SIMULATOR ENCOUNTERED AN ERROR", True, (255, 105, 105))
-            stage_surface = body_font.render("Stage: " + stage_name, True, (245, 230, 205))
-            detail_surface = small_font.render("Open the browser console (F12) for the Python traceback.", True, (205, 205, 215))
-            exit_surface = small_font.render("Press ESC or ENTER to close.", True, (205, 205, 215))
 
-            screen.blit(title_surface, title_surface.get_rect(center=(screen.get_width() // 2, 250)))
-            screen.blit(stage_surface, stage_surface.get_rect(center=(screen.get_width() // 2, 325)))
-            screen.blit(detail_surface, detail_surface.get_rect(center=(screen.get_width() // 2, 390)))
-            screen.blit(exit_surface, exit_surface.get_rect(center=(screen.get_width() // 2, 430)))
+            title_surface = title_font.render(
+                "THE SIMULATOR ENCOUNTERED AN ERROR",
+                True,
+                (255, 105, 105)
+            )
+            stage_surface = body_font.render(
+                "Stage: " + stage_name,
+                True,
+                (245, 230, 205)
+            )
+            detail_surface = small_font.render(
+                "Open the browser console (F12) for the Python traceback.",
+                True,
+                (205, 205, 215)
+            )
+            exit_surface = small_font.render(
+                "Press ESC, ENTER or click to close.",
+                True,
+                (205, 205, 215)
+            )
+
+            screen.blit(title_surface, title_surface.get_rect(center=(640, 245)))
+            screen.blit(stage_surface, stage_surface.get_rect(center=(640, 315)))
+            screen.blit(detail_surface, detail_surface.get_rect(center=(640, 385)))
+            screen.blit(exit_surface, exit_surface.get_rect(center=(640, 430)))
+
             pygame.display.flip()
             await asyncio.sleep(0)
+
     except Exception:
-        # If the display itself is the cause, retain the original traceback.
+        # Preserve the original traceback in the browser console.
         return
+
+
+async def play_cutscene(
+    screen,
+    stage_name,
+    background,
+    sprite,
+    dialogue,
+    motion,
+    scale,
+    position,
+    sound_effect
+):
+    """Run one cutscene with a consistent set of diagnostics."""
+    print("[FLOW] ENTER:", stage_name, flush=True)
+
+    completed = await run_cutscene(
+        screen,
+        background,
+        sprite,
+        dialogue,
+        motion,
+        sprite_scale=scale,
+        sprite_position=position,
+        sound_effect_filename=sound_effect
+    )
+
+    print("[FLOW] EXIT:", stage_name, "| completed:", completed, flush=True)
+    return completed
 
 
 async def main():
     game_folder = os.path.dirname(os.path.abspath(__file__))
+    current_stage = "Pygame startup"
 
-    pygame.init()
+    # Pygbag's media-engagement gate is enabled in the launch scripts. The
+    # browser therefore waits for its first real page interaction before this
+    # code starts. Initialise Pygame normally at that point so SDL's audio
+    # device is created inside the browser's permitted media session.
+    pygame.mixer.pre_init(44100, -16, 2, 1024)
+    initialised_count, failed_count = pygame.init()
+
+    print(
+        "[BOOT] pygame.init() completed | initialised:",
+        initialised_count,
+        "| failed:",
+        failed_count,
+        flush=True
+    )
+
+    mixer_details = pygame.mixer.get_init()
+    print("[AUDIO] Mixer at startup:", mixer_details, flush=True)
+
+    if mixer_details is None:
+        try:
+            pygame.mixer.init(44100, -16, 2, 1024)
+            print("[AUDIO] Explicit mixer fallback succeeded:", pygame.mixer.get_init(), flush=True)
+        except pygame.error as audio_error:
+            print("[AUDIO] Explicit mixer fallback failed:", audio_error, flush=True)
+
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption("Totally Accurate Spaceflight Simulator")
 
-    current_stage = "Pygame startup"
+    print("============================================================", flush=True)
+    print("TOTALLY ACCURATE SPACEFLIGHT SIMULATOR", flush=True)
+    print("[BOOT] Main Python entry point is running.", flush=True)
+    print("[BOOT] Display created: 1280 x 720.", flush=True)
+    print("============================================================", flush=True)
 
     try:
-        # Do not import phase1, gambling, phase2 or phase3 here.
-        # Those modules load many large images and sounds at import time.
-        # The browser only needs the title and opening cutscenes initially.
+        # Import all stages after the single display and mixer exist, but
+        # before the player starts. This catches missing assets/import errors
+        # at startup rather than halfway through a game transition.
+        current_stage = "Loading game modules"
+        print("[BOOT] Loading Phase 1, Blackjack, Phase 2 and Phase 3.", flush=True)
+        import phase1
+        import gambling
+        import phase2
+        import phase3
+        print("[BOOT] All game modules imported successfully.", flush=True)
 
+        opening_music_path = os.path.join(game_folder, "musiccutscene.ogg")
         current_stage = "Title screen"
-        print("Starting Title Screen...")
-        if not await run_title_screen(screen):
+        print("[FLOW] ENTER: Title screen", flush=True)
+        title_accepted = await run_title_screen(screen)
+        print("[FLOW] EXIT: Title screen | accepted:", title_accepted, flush=True)
+
+        if not title_accepted:
+            print("[FLOW] Game ended at the title screen.", flush=True)
             return
 
-        opening_cutscenes = [
-            (
-                "cutscene1.png", "sprite.png",
-                "You are Professor Leopold Livingstone Llama, a lecturer emeritus in mammalian 17th Century literature. But in your many readings and musings of critical theory, you discovered a terrible truth...",
-                "pan_left", 1.1, (100, 400)
-            ),
-            (
-                "cutscene2.png", "sprite2.png",
-                "Many animals have travelled into space. Dogs. Monkeys. Cats. Even the humble tardigrade...",
-                "pan_right", 1.1, (100, 400)
-            ),
-            (
-                "cutscene3.png", "sprite3.png",
-                "But despite President L Bee J's civil rights advancements, no llamas have ever been to space...",
-                "zoom_in", 0.8, (600, 200)
-            ),
-            (
-                "cutscene4.png", "sprite2.png",
-                "Inspired by the LLM movement, you seek to right this historic wrong...",
-                "pan_right", 0.4, None
-            ),
-            (
-                "cutscene5.png", "sprite2.png",
-                "You must build your rocket, travel to Mars, and conquer space for the llama race.",
-                "pan_left", 0.4, None
-            ),
-        ]
+        # title.py starts this track directly from the START input event.
+        # Do not load/restart it here: keeping the same stream avoids cutting
+        # off the beginning of the music or losing the browser gesture.
 
-        current_stage = "Opening cutscene soundtrack"
-        print("Starting opening cutscene soundtrack...")
-        start_cutscene_music(game_folder)
-
-        for index, scene in enumerate(opening_cutscenes, start=1):
-            current_stage = "Opening cutscene " + str(index)
-            print("Starting Cutscene", index, "...")
-            background, sprite, dialogue, motion, scale, position = scene
-            sound_effect_filename = "cutscene" + str(index) + ".ogg"
-
-            if not await run_cutscene(
-                screen,
+        # ------------------------------------------------------------
+        # OPENING STORY: five scenes, one continuous music track.
+        # ------------------------------------------------------------
+        for index, scene in enumerate(OPENING_CUTSCENES, start=1):
+            (
                 background,
                 sprite,
                 dialogue,
                 motion,
-                sprite_scale=scale,
-                sprite_position=position,
-                sound_effect_filename=sound_effect_filename
-            ):
+                scale,
+                position
+            ) = scene
+
+            current_stage = "Opening cutscene " + str(index)
+            sound_effect = "cutscene" + str(index) + ".ogg"
+
+            completed = await play_cutscene(
+                screen,
+                current_stage,
+                background,
+                sprite,
+                dialogue,
+                motion,
+                scale,
+                position,
+                sound_effect
+            )
+
+            if not completed:
+                print("[FLOW] Opening story cancelled by the player.", flush=True)
                 return
 
-        stop_cutscene_music()
+        audio_manager.stop_music(fade_ms=700)
+        print("[FLOW] Opening story complete.", flush=True)
 
-        # Import Phase 1 only when the player has finished the opening story.
+        # ------------------------------------------------------------
+        # PHASE 1 AND BLACKJACK.
+        # False = leave the shops and continue to Cutscene 7.
+        # True  = the player selected gambling; return to the shops after it.
+        # None  = the game/window was closed.
+        # ------------------------------------------------------------
         current_stage = "Loading Phase 1"
-        print("Loading Phase 1...")
-        import phase1
+        print("[FLOW] Phase 1 module is ready.", flush=True)
 
         while True:
             current_stage = "Phase 1: shops"
-            print("Starting Phase 1...")
-            gambling_requested = await phase1.run_phase1(screen)
+            print("[FLOW] ENTER: Phase 1 shops.", flush=True)
 
-            if gambling_requested is None:
+            phase1_result = await phase1.run_phase1(screen)
+
+            print(
+                "[FLOW] EXIT: Phase 1 shops | result:",
+                repr(phase1_result),
+                flush=True
+            )
+
+            if phase1_result is None:
+                print("[FLOW] Phase 1 ended because the game window was closed.", flush=True)
                 return
 
-            if not gambling_requested:
-                print("Phase 1 finished. Continuing to the next cutscene...")
+            if phase1_result is False:
+                print("[FLOW] Phase 1 complete. Next stage is Cutscene 7.", flush=True)
                 break
 
-            current_stage = "Loading Blackjack"
-            print("Loading The Golden Ace - Blackjack...")
-            import gambling
+            if phase1_result is True:
+                current_stage = "Loading Blackjack"
+                print("[FLOW] Gambling selected. Blackjack module is ready.", flush=True)
 
-            current_stage = "Blackjack"
-            if not await gambling.run_blackjack(screen):
-                return
-            print("Returning to Phase 1...")
+                current_stage = "Blackjack"
+                print("[FLOW] ENTER: Blackjack.", flush=True)
+                blackjack_returned = await gambling.run_blackjack(screen)
+                print("[FLOW] EXIT: Blackjack | returned:", blackjack_returned, flush=True)
 
-        current_stage = "Cutscene 7 soundtrack"
-        print("Starting Cutscene 7...")
-        start_cutscene_music(game_folder)
+                if not blackjack_returned:
+                    print("[FLOW] Blackjack window was closed.", flush=True)
+                    return
+
+                print("[FLOW] Returning from Blackjack to the Phase 1 shops.", flush=True)
+                continue
+
+            raise RuntimeError(
+                "Phase 1 returned an unexpected result: " + repr(phase1_result)
+            )
+
+        # ------------------------------------------------------------
+        # CUTSCENE 7: this must run after ESC from the outside shop screen.
+        # ------------------------------------------------------------
+        current_stage = "Cutscene 7 music"
+        audio_manager.start_music(
+            opening_music_path,
+            volume=0.55,
+            loops=-1,
+            restart=True
+        )
 
         current_stage = "Cutscene 7"
-        if not await run_cutscene(
+        completed = await play_cutscene(
             screen,
+            "Cutscene 7",
             "cutscene7.png",
             "sprite7.png",
             "You must build your rocket, travel to Mars, and conquer space for the llama race...",
             "zoom_in",
-            sprite_scale=1,
-            sprite_position=(400, 300),
-            sound_effect_filename="cutscene7.ogg"
-        ):
+            1,
+            (400, 300),
+            "cutscene7.ogg"
+        )
+
+        if not completed:
+            print("[FLOW] Cutscene 7 was cancelled.", flush=True)
             return
 
-        stop_cutscene_music()
+        audio_manager.stop_music(fade_ms=700)
 
+        # ------------------------------------------------------------
+        # PHASE 2: rocket launch and flight.
+        # ------------------------------------------------------------
         current_stage = "Loading Phase 2"
-        print("Loading Phase 2...")
-        import phase2
+        print("[FLOW] Phase 2 module is ready.", flush=True)
 
         current_stage = "Phase 2"
-        print("Starting Phase 2...")
-        if not await phase2.run_phase2(screen):
+        print("[FLOW] ENTER: Phase 2 rocket flight.", flush=True)
+        phase2_completed = await phase2.run_phase2(screen)
+        print("[FLOW] EXIT: Phase 2 | completed:", phase2_completed, flush=True)
+
+        if not phase2_completed:
+            print("[FLOW] Phase 2 did not complete; stopping here as designed.", flush=True)
             return
 
-        current_stage = "Cutscene 8 soundtrack"
-        print("Starting Cutscene 8 soundtrack...")
-        start_cutscene_music(game_folder)
+        # ------------------------------------------------------------
+        # CUTSCENE 8 AND PHASE 3.
+        # ------------------------------------------------------------
+        current_stage = "Cutscene 8 music"
+        audio_manager.start_music(
+            opening_music_path,
+            volume=0.55,
+            loops=-1,
+            restart=True
+        )
 
         current_stage = "Cutscene 8"
-        print("Starting Cutscene 8 (Phase 2 to Phase 3)...")
-        if not await run_cutscene(
+        completed = await play_cutscene(
             screen,
+            "Cutscene 8",
             "cutscene5.png",
             "sprite7.png",
             "Congratulations! Your mission has brought you one step closer to the stars. But the real adventure is only just beginning...",
             "zoom_in",
-            sprite_scale=1.2,
-            sprite_position=(400, 400),
-            sound_effect_filename="cutscene8.ogg"
-        ):
+            1.2,
+            (400, 400),
+            "cutscene8.ogg"
+        )
+
+        if not completed:
+            print("[FLOW] Cutscene 8 was cancelled.", flush=True)
             return
 
-        stop_cutscene_music()
+        audio_manager.stop_music(fade_ms=700)
 
         current_stage = "Loading Phase 3"
-        print("Loading Phase 3...")
-        import phase3
+        print("[FLOW] Phase 3 module is ready.", flush=True)
 
         current_stage = "Phase 3"
-        print("Starting Phase 3...")
-        if not await phase3.run_phase3(screen):
-            return
+        print("[FLOW] ENTER: Phase 3 Mars exploration.", flush=True)
+        phase3_completed = await phase3.run_phase3(screen)
+        print("[FLOW] EXIT: Phase 3 | completed:", phase3_completed, flush=True)
 
-        print("Game finished!")
+        if phase3_completed:
+            print("[FLOW] GAME COMPLETE.", flush=True)
+        else:
+            print("[FLOW] Phase 3 ended early.", flush=True)
 
     except Exception:
-        print("\n============================================================")
-        print("THE GAME CRASHED DURING:", current_stage)
-        print("Full Python traceback:")
+        print("\n============================================================", flush=True)
+        print("[CRASH] THE GAME CRASHED DURING:", current_stage, flush=True)
+        print("[CRASH] Full Python traceback:", flush=True)
         traceback.print_exc()
-        print("============================================================\n")
+        print("============================================================\n", flush=True)
         await show_error_screen(screen, current_stage)
 
     finally:
-        try:
-            if pygame.mixer.get_init():
-                pygame.mixer.music.stop()
-        except pygame.error:
-            pass
+        audio_manager.stop_music()
         pygame.quit()
+        print("[BOOT] Pygame shut down.", flush=True)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import pygame
 import random
 import math
 import global_variables
+import audio_manager
 
 # Defines
 standardResolution = [1280, 720]
@@ -18,6 +19,7 @@ def asset_path(*parts):
 # Phase 2 death state.
 game_over = False
 death_reason = ""
+explosion_sound = None
 
 
 # --------------------------------------------------
@@ -67,14 +69,13 @@ def check_launch_requirements():
             "You did not purchase any rocket fuel."
         )
 
-    # The current Phase 1 shop uses "Water storage tank".
-    # This also recognises "Drinking water supply" if that item is
-    # present in another version of the shop.
+    # Water storage equipment is not itself a supply of drinking water.
+    # Count an actual water purchase, not a tank or recycling system.
     has_water = False
 
     for item_name in purchased_item_names:
 
-        if "water" in item_name and "recycl" not in item_name:
+        if item_name == "gallon of water" or "drinking water" in item_name:
             has_water = True
             break
 
@@ -777,17 +778,32 @@ async def graphics_init(screen):
 
     if launch_failure_reason is not None:
 
-        # run_phase2() displays the death screen once after this function returns.
+        # Store the failure state so run_phase2() displays the death screen.
+        death_reason = launch_failure_reason
+        game_over = True
+
+        print("[PHASE 2] LAUNCH CHECK FAILED")
+        print("[PHASE 2] Purchased items:", purchased_item_names)
+        print("[PHASE 2] Reason:", launch_failure_reason)
+
         return False
 
+    print("[PHASE 2] Launch requirements satisfied.")
+    print("[PHASE 2] Purchased items:", purchased_item_names)
+
     # Only start the music once the launch requirements are met.
-    try:
-        if not pygame.mixer.get_init():
-            pygame.mixer.init()
-        pygame.mixer.music.load(asset_path("Audio", "bgMusic.ogg"))
-        pygame.mixer.music.play(-1)
-    except pygame.error as audio_error:
-        print("Flight music could not be started:", audio_error)
+    audio_manager.start_music(
+        asset_path("Audio", "bgMusic.ogg"),
+        volume=0.60,
+        loops=-1
+    )
+
+    # Load the impact sound once, not every time an asteroid is destroyed.
+    global explosion_sound
+    explosion_sound = audio_manager.load_sound(
+        asset_path("Audio", "explosionSound.ogg"),
+        volume=0.8
+    )
 
     asteroidExplosionAnimations = [
 
@@ -959,12 +975,7 @@ async def graphics_init(screen):
                     asteroidExplosionAnimations
                 )
 
-                try:
-                    if pygame.mixer.get_init():
-                        explosion_sound = pygame.mixer.Sound(asset_path("Audio", "explosionSound.ogg"))
-                        explosion_sound.play()
-                except pygame.error as audio_error:
-                    print("Explosion sound could not play:", audio_error)
+                audio_manager.play_sound(explosion_sound)
 
                 explosionGroup.add(
                     Explosion(
@@ -1027,10 +1038,6 @@ async def run_phase2(screen_surface):
     if not phase_completed:
         return False
 
-    try:
-        if pygame.mixer.get_init():
-            pygame.mixer.music.fadeout(500)
-    except pygame.error:
-        pass
+    audio_manager.stop_music(fade_ms=500)
     print("Phase 2 finished.")
     return True

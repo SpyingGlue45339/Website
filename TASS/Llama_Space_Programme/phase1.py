@@ -2,6 +2,7 @@ import asyncio
 import os
 import pygame
 import global_variables
+import audio_manager
 
 # The main launcher creates the one shared Pygame display.
 # This module only draws onto the surface passed to run_phase1().
@@ -24,14 +25,7 @@ shopping_music_path = os.path.join(folder, "shopping.ogg")
 
 # Load the purchase sound effect.
 buying_sound_path = os.path.join(folder, "buying.ogg")
-try:
-    if not pygame.mixer.get_init():
-        pygame.mixer.init()
-    buying_sound = pygame.mixer.Sound(buying_sound_path)
-    buying_sound.set_volume(0.8)
-except pygame.error as audio_error:
-    buying_sound = None
-    print("Purchase sound could not be loaded:", audio_error)
+buying_sound = audio_manager.load_sound(buying_sound_path, volume=0.8)
 
 font_path = os.path.join(folder, "ShareTechMono-Regular.ttf")
 
@@ -459,11 +453,7 @@ def buy(item):
     item_effect(item)
 
     # Play the purchase sound only after a successful purchase.
-    if buying_sound is not None:
-        try:
-            buying_sound.play()
-        except pygame.error as audio_error:
-            print("Purchase sound could not play:", audio_error)
+    audio_manager.play_sound(buying_sound)
 
     status_message = "Purchased: " + item[0]
 
@@ -592,17 +582,24 @@ def outside(mouse_position):
     # Draw the large blimp and its clickable Gambling sign.
     if blimp_image is not None:
         screen.blit(blimp_image, (20, 20))
-        gambling_mouse_position = pygame.mouse.get_pos()
-        gambling_button_colour = (250, 240, 215)
-        gambling_border_colour = (35, 190, 85) if gambling_button_rect.collidepoint(gambling_mouse_position) else (30, 150, 65)
-        gambling_text_colour = (20, 105, 45)
 
-        pygame.draw.rect(screen, gambling_button_colour, gambling_button_rect, border_radius=7)
-        pygame.draw.rect(screen, gambling_border_colour, gambling_button_rect, width=3, border_radius=7)
+    # Draw the clickable casino sign independently of the decorative blimp.
+    # That way a missing/failed blimp image cannot disable gambling.
+    gambling_mouse_position = pygame.mouse.get_pos()
+    gambling_button_colour = (250, 240, 215)
+    gambling_border_colour = (
+        (35, 190, 85)
+        if gambling_button_rect.collidepoint(gambling_mouse_position)
+        else (30, 150, 65)
+    )
+    gambling_text_colour = (20, 105, 45)
 
-        gambling_text = font_small.render("Gambling", True, gambling_text_colour)
-        gambling_text_rect = gambling_text.get_rect(center=gambling_button_rect.center)
-        screen.blit(gambling_text, gambling_text_rect)
+    pygame.draw.rect(screen, gambling_button_colour, gambling_button_rect, border_radius=7)
+    pygame.draw.rect(screen, gambling_border_colour, gambling_button_rect, width=3, border_radius=7)
+
+    gambling_text = font_small.render("Gambling", True, gambling_text_colour)
+    gambling_text_rect = gambling_text.get_rect(center=gambling_button_rect.center)
+    screen.blit(gambling_text, gambling_text_rect)
 
     # Shop entrances are selected with the mouse only; no keyboard shop picker.
     for shop in shop_entrances:
@@ -612,7 +609,7 @@ def outside(mouse_position):
             text(shop_name, font_medium, (255, 220, 130), door.centerx, door.centery, True)
 
     text("Click a shop to enter", font_small, (40, 34, 30), 25, 690)
-    text("ESC: next phase", font_small, (40, 34, 30), 865, 690)
+    text("G: casino   |   ESC: next phase", font_small, (40, 34, 30), 865, 690)
     text("I: inventory", font_small, (40, 34, 30), 1120, 690)
 
 
@@ -766,26 +763,48 @@ async def run_phase1(screen_surface):
     scrollbar_drag_grab = 0
     status_message = ""
 
-    try:
-        if not pygame.mixer.get_init():
-            pygame.mixer.init()
-        pygame.mixer.music.load(shopping_music_path)
-        pygame.mixer.music.set_volume(0.45)
-        pygame.mixer.music.play(-1)
-    except pygame.error as audio_error:
-        print("Shop music could not be started:", audio_error)
+    shopping_music_started = audio_manager.start_music(
+        shopping_music_path,
+        volume=0.45,
+        loops=-1
+    )
+    print(
+        "[AUDIO] Phase 1 shopping music started:",
+        shopping_music_started,
+        "| mixer:",
+        pygame.mixer.get_init(),
+        flush=True
+    )
 
     while running:
         clock.tick(fps)
         mouse_position = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
+            if event.type == pygame.FINGERDOWN:
+                finger_position = (
+                    int(event.x * screen_width),
+                    int(event.y * screen_height)
+                )
+                event = pygame.event.Event(
+                    pygame.MOUSEBUTTONDOWN,
+                    {"pos": finger_position, "button": 1}
+                )
+
             if event.type == pygame.QUIT:
                 phase1_window_closed = True
                 running = False
-                continue
+                # Stop processing this batch immediately.
+                break
 
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_g and current_screen == "outside":
+                    # Keyboard fallback for the casino sign, useful in the browser.
+                    gambling_requested = True
+                    running = False
+                    print("[GAMBLING] G key selected Blackjack.", flush=True)
+                    break
+
                 if event.key == pygame.K_ESCAPE:
                     if current_screen == "inventory":
                         current_screen = previous_screen
@@ -797,7 +816,11 @@ async def run_phase1(screen_surface):
                         status_message = ""
                     else:
                         # ESC from the outside shop area advances to Phase 2.
+                        # Break immediately so later queued events cannot turn
+                        # this normal transition into a window-close exit.
                         running = False
+                        print("[FLOW] Phase 1 exit requested with ESC.", flush=True)
+                        break
 
                 elif event.key == pygame.K_i:
                     if current_screen == "inventory":
@@ -807,8 +830,8 @@ async def run_phase1(screen_surface):
                         current_screen = "inventory"
                         scrollbar_dragging = False
 
-                # Shops and item purchases are mouse-driven; ESC and I remain
-                # the only keyboard shortcuts on the shop screens.
+                # Shop purchases remain mouse-driven. G is a casino shortcut
+                # only while outside; ESC and I retain their original meanings.
 
             elif event.type == pygame.MOUSEWHEEL and current_screen == "inside":
                 # Scroll when the pointer is over the item list or its bar.
@@ -857,10 +880,11 @@ async def run_phase1(screen_surface):
 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and current_screen == "outside":
                 # Clicking Gambling launches the Blackjack minigame.
-                if blimp_image is not None and gambling_button_rect.collidepoint(event.pos):
+                if gambling_button_rect.collidepoint(event.pos):
                     gambling_requested = True
                     running = False
-                    continue
+                    print("[GAMBLING] Sign clicked at:", event.pos, flush=True)
+                    break
 
                 for shop_name, door in shop_entrances:
                     if door.collidepoint(event.pos):
@@ -882,11 +906,7 @@ async def run_phase1(screen_surface):
         await asyncio.sleep(0)
 
     # Fade out the shop music. Pygame itself stays running for the next phase.
-    try:
-        if pygame.mixer.get_init():
-            pygame.mixer.music.fadeout(1000)
-    except pygame.error:
-        pass
+    audio_manager.stop_music(fade_ms=1000)
 
     # Keep the player's resources available to every later phase.
     global_variables.money = money

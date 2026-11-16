@@ -1,9 +1,9 @@
-LLAMA SPACE PROGRAMME - INTEGRATED VERSION
-=========================================
+TOTALLY ACCURATE SPACEFLIGHT SIMULATOR
+======================================
 
 RUNNING ON DESKTOP
 ------------------
-1. Keep all files and asset folders together as they are in this package.
+1. Keep the Llama_Space_Programme folder and its assets together.
 2. Install the required package:
 
        python -m pip install -r requirements.txt
@@ -12,39 +12,32 @@ RUNNING ON DESKTOP
 
        python main.py
 
-The requirements file uses pygame-ce. It is imported in Python code using
-`import pygame`, just like the original Pygame package.
+BROWSER BUILD
+-------------
+This folder is adapted for Pygbag/WebAssembly:
+- Every interactive stage is asynchronous and yields to the browser.
+- Audio uses OGG files.
+- Explosion animations use PNG frame sequences rather than Pillow at runtime.
+- The display and mixer are each shared by every stage.
+- Audio initialises from the user's START interaction.
 
-DISPLAY
--------
-The shared display is a fixed 1280 x 720 window. This matches the existing
-shop, rocket-flight and Mars layouts, so every phase uses the same display.
+For the local browser test and GitHub Pages build, use the BAT files in the
+parent folder and read README_RADICAL_FIX.txt there.
 
 GAME STRUCTURE
 --------------
-- main.py owns the Pygame lifecycle and runs the title screen and game stages.
+- main.py owns the shared display, stage sequence and Pygame lifecycle.
+- audio_manager.py owns the single shared audio mixer and music/effect helpers.
 - title.py contains the title screen.
 - cutscene.py contains the animated story scenes.
 - phase1.py contains the shops and inventory.
-- gambling.py contains the Blackjack minigame.
+- gambling.py contains The Golden Ace Blackjack minigame.
 - phase2.py contains rocket flight.
 - phase3.py contains Mars exploration.
 - global_variables.py stores resources shared between game stages.
 - events.py contains the random Mars events.
 
-BROWSER VERSION
----------------
-This folder has also been adapted for Pygbag/WebAssembly:
-- Interactive game stages are asynchronous and yield to the browser.
-- Audio is stored in OGG format.
-- Explosion animations use PNG frame sequences, so Pillow is not required.
-- The title soundtrack waits for the first keyboard or mouse interaction.
-
-See the separate README_WEB.txt in the parent folder for the exact Pygbag
-commands and instructions for embedding the built game in a website.
-
-CONTROLS
---------
-The game is designed around a 1280 x 720 display and keyboard/mouse input.
-The shops, Blackjack, rocket flight, cutscenes and Mars exploration all share
-the same Pygame display and session resources.
+DISPLAY AND INPUT
+-----------------
+The game uses a shared 1280 x 720 display. The shops, Blackjack, rocket flight,
+cutscenes and Mars exploration all run in this same Pygame session.

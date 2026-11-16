@@ -5,6 +5,7 @@ import random
 import pygame
 import global_variables
 import events
+import audio_manager
 
 # The main launcher owns the shared display.
 screen_width = 1280
@@ -24,25 +25,11 @@ game_folder = os.path.dirname(os.path.abspath(__file__))
 martian_music_path = os.path.join(game_folder, "martian.ogg")
 button_sound_path = os.path.join(game_folder, "button.ogg")
 
-try:
-    if not pygame.mixer.get_init():
-        pygame.mixer.init()
-
-    if os.path.isfile(button_sound_path):
-        button_sound = pygame.mixer.Sound(button_sound_path)
-        button_sound.set_volume(0.65)
-    else:
-        button_sound = None
-        print("Could not find audio file: button.ogg")
-
-except pygame.error as audio_error:
-    print("Audio could not be initialised:", audio_error)
-    button_sound = None
+button_sound = audio_manager.load_sound(button_sound_path, volume=0.65)
 
 
 def play_button_sound():
-    if button_sound is not None:
-        button_sound.play()
+    audio_manager.play_sound(button_sound)
 
 
 font_path = os.path.join(game_folder, "ShareTechMono-Regular.ttf")
@@ -1730,16 +1717,9 @@ async def run_phase3(screen_surface):
         )
 
     if os.path.isfile(martian_music_path) and not game_over:
-        try:
-            if not pygame.mixer.get_init():
-                pygame.mixer.init()
-            pygame.mixer.music.load(martian_music_path)
-            pygame.mixer.music.set_volume(0.45)
-            pygame.mixer.music.play(-1)
-        except pygame.error as audio_error:
-            print("Mars music could not be started:", audio_error)
+        audio_manager.start_music(martian_music_path, volume=0.45, loops=-1)
     elif not os.path.isfile(martian_music_path):
-        print("Could not find audio file: martian.ogg")
+        print("[AUDIO] Could not find audio file: martian.ogg", flush=True)
 
     while running:
         clock.tick(fps)
@@ -1826,9 +1806,5 @@ async def run_phase3(screen_surface):
     global_variables.bases = bases
     global_variables.turns_on_mars = turns_completed
 
-    try:
-        if pygame.mixer.get_init():
-            pygame.mixer.music.fadeout(1000)
-    except pygame.error:
-        pass
+    audio_manager.stop_music(fade_ms=1000)
     return not phase3_window_closed and not game_over

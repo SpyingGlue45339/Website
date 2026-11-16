@@ -5,6 +5,7 @@ import pygame
 import os
 import math
 import global_variables
+import audio_manager
 
 # Find the folder containing this game and its image/audio files.
 game_folder = os.path.dirname(os.path.abspath(__file__))
@@ -972,13 +973,17 @@ async def run_blackjack(screen_surface):
     round_result = None
     question_selection = "YES"
 
-    try:
-        if not pygame.mixer.get_init():
-            pygame.mixer.init()
-        pygame.mixer.music.load(casino_music_path)
-        pygame.mixer.music.play(-1)
-    except pygame.error as audio_error:
-        print("Casino music could not be started:", audio_error)
+    print(
+        "[GAMBLING] Blackjack opened. Mixer:",
+        pygame.mixer.get_init(),
+        flush=True
+    )
+    casino_music_started = audio_manager.start_music(
+        casino_music_path,
+        volume=0.55,
+        loops=-1
+    )
+    print("[AUDIO] Casino music started:", casino_music_started, flush=True)
 
     while running:
 
@@ -992,9 +997,21 @@ async def run_blackjack(screen_surface):
 
         for event in pygame.event.get():
 
+            if event.type == pygame.FINGERDOWN:
+                finger_position = (
+                    int(event.x * WIDTH),
+                    int(event.y * HEIGHT)
+                )
+                event = pygame.event.Event(
+                    pygame.MOUSEBUTTONDOWN,
+                    {"pos": finger_position, "button": 1}
+                )
+
             if event.type == pygame.QUIT:
                 casino_window_closed = True
                 running = False
+                print("[GAMBLING] Window close requested.", flush=True)
+                break
 
             # MOUSE
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -1021,6 +1038,8 @@ async def run_blackjack(screen_surface):
 
                             question_selection = "No"
                             running = False
+                            print("[GAMBLING] Player selected No; returning to shops.", flush=True)
+                            break
 
             # KEYBOARD
             if event.type == pygame.KEYDOWN:
@@ -1028,6 +1047,8 @@ async def run_blackjack(screen_surface):
                 # EXIT FULLSCREEN
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                    print("[GAMBLING] ESC pressed; returning to shops.", flush=True)
+                    break
 
                 # OPENING YES/NO CHOICE: WASD and arrow keys both work.
                 elif game_state == "question":
@@ -1424,9 +1445,6 @@ async def run_blackjack(screen_surface):
 
     # Save the casino balance for the shop phase.
     global_variables.money = moneytotal
-    try:
-        if pygame.mixer.get_init():
-            pygame.mixer.music.fadeout(500)
-    except pygame.error:
-        pass
+    audio_manager.stop_music(fade_ms=500)
+    print("[GAMBLING] Returning balance:", moneytotal, flush=True)
     return not casino_window_closed
