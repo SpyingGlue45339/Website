@@ -367,11 +367,22 @@ def update_stuff(dt):
         if item_name == "Self-sweeping solar panels":
             power = power + 10 * dt
 
-    # grow food if we have enough water and power
+    # Hydroponics grow food for the shared base network. They draw water
+    # from the shared reserve first, then from the player's carried water.
+    # This means the system still works when the base reserve starts empty.
     if item_is_owned("Hydroponic crop system"):
-        if base_water >= 2 * dt and power >= 2 * dt:
-            base_water = base_water - 2 * dt
-            power = power - 2 * dt
+        crop_water_required = 2 * dt
+        total_available_crop_water = base_water + water
+
+        if total_available_crop_water >= crop_water_required and power >= crop_water_required:
+            water_from_base = min(base_water, crop_water_required)
+            base_water = base_water - water_from_base
+
+            remaining_crop_water = crop_water_required - water_from_base
+            if remaining_crop_water > 0:
+                water = water - remaining_crop_water
+
+            power = power - crop_water_required
             base_food = base_food + 4 * dt
 
     # consume personal resources
@@ -431,6 +442,8 @@ event_popup_title = ""
 event_popup_description = ""
 event_popup_subtitle = ""
 event_popup_close_rect = pygame.Rect(0, 0, 0, 0)
+# A fatal event is shown to the player before the death screen is activated.
+pending_death_reason = None
 
 def get_next_rent_amount():
     if rent_payments_made == 0:
@@ -474,6 +487,7 @@ def finish_turn():
     global day, turns_completed, game_over, status_message
     global money, energy, power, oxygen, water, base_oxygen, rad
     global event_popup_active, event_popup_title, event_popup_description, event_popup_subtitle
+    global pending_death_reason
 
     dt = 1
 
@@ -595,34 +609,31 @@ def finish_turn():
 
         event_popup_active = True
 
-        # Some events can end the mission immediately.
+        # Record fatal consequences, but do not activate the death screen yet.
+        # The event popup must remain visible until the player closes it.
+        pending_death_reason = None
+
         if deathmessage is not None:
-            game_over = True
-            status_message = str(deathmessage)
+            pending_death_reason = str(deathmessage)
 
         elif water <= 0:
-            game_over = True
-            status_message = "You have run out of water."
+            pending_death_reason = "You died because your water supply ran out during this event."
 
         elif oxygen <= 0:
-            game_over = True
-            status_message = "You have run out of oxygen."
+            pending_death_reason = "You died because your oxygen supply ran out during this event."
 
         elif food <= 0:
-            game_over = True
-            status_message = "You have run out of food."
+            pending_death_reason = "You died because your food supply ran out during this event."
 
         elif energy <= 0:
-            game_over = True
-            status_message = "You have run out of energy."
+            pending_death_reason = "You died because the event exhausted your energy."
 
         elif rad <= 0:
-            game_over = True
-            status_message = "You died from radiation exposure."
+            pending_death_reason = "You died from radiation exposure during this event."
 
     # Rent is charged after the turn's survival checks and random event.
     # A death during the turn means there is no further rent transaction.
-    if not game_over:
+    if not game_over and pending_death_reason is None:
         turns_completed = turns_completed + 1
 
         if turns_completed >= next_rent_due_turn:
@@ -808,7 +819,7 @@ def rest():
 
 # build another base
 def build_base():
-    global energy, power, water, oxygen, bases
+    global money, energy, power, water, oxygen, bases
     global status_message, new_base_positions
 
     current_biome = planet_map[x_pos][y_pos]
@@ -823,6 +834,14 @@ def build_base():
 
     if current_biome == "Water":
         status_message = "You cannot build a base on an ice cap."
+        return
+
+    mars_base_price = 50000
+    if money < mars_base_price:
+        status_message = (
+            "Building a base on Mars costs £50,000. You only have £"
+            + str(int(money)) + "."
+        )
         return
 
     base_build_energy_cost = energy_cost(50)
@@ -860,8 +879,10 @@ def build_base():
         return
 
     # The purchased structure remains in the inventory as the building
-    # permit for the second additional building as well.
+    # permit for the second additional building as well. Each new Martian
+    # base also has its own £50,000 construction cost.
 
+    money = money - mars_base_price
     energy = energy - base_build_energy_cost
     power = power - 50
     water = water - 30
@@ -1644,7 +1665,7 @@ async def run_phase3(screen_surface):
     global money, food, water, oxygen, energy, power, inventory, water_capacity
     global base_oxygen, base_food, base_water
     global day, turns_completed, next_rent_due_turn, rent_payments_made
-    global game_over, status_message
+    global game_over, status_message, pending_death_reason
     global x_pos, y_pos, bases, planet_map, first_base_position, new_base_positions
 
     screen = screen_surface
@@ -1705,6 +1726,7 @@ async def run_phase3(screen_surface):
     event_popup_title = ""
     event_popup_description = ""
     event_popup_subtitle = ""
+    pending_death_reason = None
     game_over = False
 
     # Confirm the required base and spacesuit using the latest shop inventory.
@@ -1729,21 +1751,26 @@ async def run_phase3(screen_surface):
                 phase3_window_closed = True
                 running = False
 
-            # Death takes priority over popups. Any key or mouse click exits,
-            # so a fatal random event cannot trap the player behind its popup.
-            elif game_over:
-                if event.type == pygame.KEYDOWN:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    running = False
-
-            # While an event popup is open, only its x button can be clicked.
+            # The event popup has priority over the death screen. A fatal event
+            # must be read and closed before the death screen appears.
             elif event_popup_active:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        if event_popup_close_rect.collidepoint(event.pos):
-                            play_button_sound()
-                            event_popup_active = False
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if event_popup_close_rect.collidepoint(event.pos):
+                        play_button_sound()
+                        event_popup_active = False
+
+                        if pending_death_reason is not None:
+                            status_message = pending_death_reason
+                            pending_death_reason = None
+                            game_over = True
+
+                # Do not let queued clicks or keypresses activate the map
+                # after the popup has just been dismissed.
+                break
+
+            elif game_over:
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                    running = False
 
             # Normal movement and actions are available when no popup is open.
             else:

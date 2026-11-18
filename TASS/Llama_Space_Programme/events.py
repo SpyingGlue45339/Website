@@ -106,7 +106,7 @@ def run_random_event(
             event_subtitle = "Energy decreased"
 
         if energy <= 0:
-            deathmessage = "poop"
+            deathmessage = "You died from severe dysentery because you did not have an Emergency Medical Kit to treat it."
 
     # Llamageddon
     elif numb == 2:
@@ -114,7 +114,7 @@ def run_random_event(
         event_title = "LLAMAGEDDON"
         event_description = "LLAMAGEDDON! An asteroid hits your base. You wander through the Martian wilderness for days on end, before breathing your last breathe as you wish you'd have invested in your cousin's piano repair business..."
         event_subtitle = "Base destroyed"
-        deathmessage = "oxygen run out"
+        deathmessage = "You died after an asteroid destroyed your base and left you without oxygen."
 
     # Professor Reginald Panda
     elif numb == 3 or numb == 35 or numb == 36 or numb == 37:
@@ -126,7 +126,7 @@ def run_random_event(
         event_subtitle = "Energy decreased"
 
         if energy <= 0:
-            deathmessage = "humiliation"
+            deathmessage = "You died from exhaustion and humiliation after Professor Reginald Panda destroyed your morale."
 
     # Hackathon time
     elif numb == 4:

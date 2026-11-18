@@ -4,6 +4,7 @@ import random
 import pygame
 import os
 import math
+import time
 import global_variables
 import audio_manager
 
@@ -853,7 +854,23 @@ def create_deck():
                 rank + " of " + suit
             )
 
-    random.shuffle(new_deck)
+    # Do not rely on the module-level PRNG seed in browser/WASM builds.
+    # SystemRandom uses the platform entropy source when it is available.
+    try:
+        random.SystemRandom().shuffle(new_deck)
+    except Exception:
+        # Browser-safe fallback: mix wall-clock time, high-resolution timer,
+        # Pygame ticks, and an object-specific value into a per-deck seed.
+        seed_parts = [
+            time.time_ns(),
+            time.perf_counter_ns(),
+            pygame.time.get_ticks(),
+            id(new_deck),
+        ]
+        fallback_seed = 0
+        for seed_part in seed_parts:
+            fallback_seed ^= int(seed_part)
+        random.Random(fallback_seed).shuffle(new_deck)
 
     return new_deck
 

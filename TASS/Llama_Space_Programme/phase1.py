@@ -163,8 +163,8 @@ rocket_shop = [
     ["Radiation shielding", 8500, "Safety", "The UAE Safety Board says this could help you in this quest."],
     ["Emergency escape system", 10000, "Safety", "An emergency way out if things go very wrong."],
 
-    ["Concrete box", 6000, "Base", "A sturdy, if rather uninspiring, IKEA template."],
-    ["Polycarbon dome", 30000, "Base", "A large, slightly performative, dome for your lunar base."]
+    ["Concrete box", 35000, "Base", "A sturdy, if rather uninspiring, IKEA template."],
+    ["Polycarbon dome", 35000, "Base", "A large, slightly performative, dome for your lunar base."]
 ]
 
 
@@ -609,7 +609,7 @@ def outside(mouse_position):
             text(shop_name, font_medium, (255, 220, 130), door.centerx, door.centery, True)
 
     text("Click a shop to enter", font_small, (40, 34, 30), 25, 690)
-    text("I: inventory", font_small, (40, 34, 30), 1120, 690)
+    text("I: inventory  |  ESC: proceed to Phase 2", font_tiny, (40, 34, 30), 1120, 690)
 
 
 def inside(mouse_position, current_shop):
