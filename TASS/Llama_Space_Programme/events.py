@@ -77,7 +77,7 @@ def run_random_event(
     if numb == 1 or numb == 32 or numb == 33 or numb == 34:
 
         event_title = "Llama dysentry"
-        event_description = "'Sometimes, when you've gotta go, you've gotta go' - Bear in the Big Blue House \nSometimes it's hard to keep your bowels in check. But when you checked your spacesuit, you wished you hadn't looked."
+        event_description = "'Sometimes, when you've gotta go, you've gotta go' - Bear in the Big Blue House. \nSometimes it's hard to keep your bowels in check. But when you checked your spacesuit, you wished you hadn't looked."
 
         medical_kit_found = False
         inventory = getattr(global_variables, "inventory", [])
@@ -283,7 +283,7 @@ def run_random_event(
     elif numb == 19:
 
         event_title = "An existential crisis"
-        event_description = "After listenning to fellow master debater Badger Shapino, you question the purpose of this mission. What is the meaning of life anyway? Pineapples? The Government? Why did they send those dogs into space and did they come back???"
+        event_description = "After listening to fellow master debater Badger Shapino, you question the purpose of this mission. What is the meaning of life anyway? Pineapples? The Government? Why did they send those dogs into space and did they come back???"
 
         if energy < 20:
             energy = 0
@@ -330,7 +330,7 @@ def run_random_event(
     # Martian tourist
     elif numb == 24:
 
-        event_title = "An unhappy tourist"
+        event_title = "Karen"
         event_description = "A female Martian tourist complains that your base is ruining the view. You are fined £50."
 
         money = money - 50
@@ -439,7 +439,7 @@ def run_random_event(
     # monkey mayhem
     elif numb == 44:
 
-        event_title = "monkey mayhem"
+        event_title = "Monkey Mayhem"
         event_description = "Some goshdarned black-crowned central american squirrel monkey has launched a hack-attack on your base! How dare organisations promote hacking. One of your bases is disabled for five turns."
 
         available_base_positions = []
