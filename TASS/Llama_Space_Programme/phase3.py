@@ -836,10 +836,10 @@ def build_base():
         status_message = "You cannot build a base on an ice cap."
         return
 
-    mars_base_price = 50000
+    mars_base_price = 5000
     if money < mars_base_price:
         status_message = (
-            "Building a base on Mars costs £50,000. You only have £"
+            "Building a base on Mars costs £5,000. You only have £"
             + str(int(money)) + "."
         )
         return
