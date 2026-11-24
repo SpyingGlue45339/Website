@@ -1356,3 +1356,55 @@ footer a:hover {
         background-color 0.2s ease;
 
 }
+
+
+
+
+
+
+
+
+
+
+/* DEAL COMPARISON TABLES */
+
+.article-table.deal-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 25px 0;
+}
+
+.article-table.deal-table th {
+    background-color: #292929;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.article-table.deal-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Provider names */
+.article-table.deal-table td:first-child {
+    font-weight: bold;
+}
+
+/* Referral commission column */
+.article-table.deal-table td:nth-child(2) {
+    background-color: #fce8e6;
+    color: #a12622;
+}
+
+/* Customer discount column */
+.article-table.deal-table td:nth-child(3) {
+    background-color: #e4f2e5;
+    color: #216b35;
+    font-weight: bold;
+}
+
+/* Slightly darker hover effect */
+.article-table.deal-table tbody tr:hover td {
+    filter: brightness(0.95);
+}
